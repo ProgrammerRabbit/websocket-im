@@ -15,6 +15,7 @@
           <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.2" />
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:4.3.4.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-web:4.3.4.RELEASE" />
+          <element id="library" level="project" name="Maven: org.mybatis:mybatis:3.4.1" />
           <element id="library" level="project" name="Maven: com.github.ProgrammerRabbit:rabbit-utils:-f3a6d3cd04-1" />
         </element>
       </element>
