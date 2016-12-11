@@ -11,6 +11,8 @@
 
     <properties>
         <SPRING-VERSION>4.3.4.RELEASE</SPRING-VERSION>
+        <MYBATIS-VERSION>3.4.1</MYBATIS-VERSION>
+        <RABBIT-UTILS-CODE>-f3a6d3cd04-1</RABBIT-UTILS-CODE>
     </properties>
 
     <dependencies>
@@ -21,9 +23,15 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${MYBATIS-VERSION}</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.ProgrammerRabbit</groupId>
             <artifactId>rabbit-utils</artifactId>
-            <version>-f3a6d3cd04-1</version>
+            <version>${RABBIT-UTILS-CODE}</version>
         </dependency>
     </dependencies>
 
