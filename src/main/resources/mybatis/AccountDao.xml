@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.github.programmerrabbit.dao.AccountDao">
-    <select id="getAccountByUsername" resultType="com.github.programmerrabbit.entity.Account">
-        SELECT *
-        FROM Account
-        WHERE username = #{username}
-    </select>
+
+    <insert id="insert" parameterType="com.github.programmerrabbit.entity.Account">
+        INSERT INTO Account
+        (
+        username,
+        password
+        )
+        VALUES
+        (
+        #{entity.username},
+        #{entity.password}
+        )
+    </insert>
+
+    <update id="updateById">
+        UPDATE Account
+        SET
+        username = #{entity.username},
+        password = #{entity.password}
+        WHERE
+        id = #{id}
+    </update>
 </mapper>
