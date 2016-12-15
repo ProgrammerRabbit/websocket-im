@@ -12,19 +12,19 @@ import javax.servlet.http.HttpSession;
  * Created by Rabbit on 2016/12/15.
  */
 @Controller
-public class LoginController {
+public class RegisterController {
     @Resource
     private AccountService accountService;
 
-    @RequestMapping("/login")
-    public String login(AccountDto accountDto, HttpSession httpSession) {
+    @RequestMapping("/register")
+    public String register(AccountDto accountDto, HttpSession httpSession) {
         try {
             AccountDto dbAccountDto = accountService.getAccount(accountDto);
             if (dbAccountDto == null) {
+                accountService.addAccount(accountDto);
                 return "redirect:/resources/login.html";
             } else {
-                httpSession.setAttribute("s_user", dbAccountDto);
-                return "redirect:/resources/page/chat.html";
+                return "redirect:/resources/register.html";
             }
         } catch (Exception e) {
             e.printStackTrace();

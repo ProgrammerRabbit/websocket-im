@@ -27,4 +27,10 @@ public class AccountServiceImpl implements AccountService {
         }
         return null;
     }
+
+    public void addAccount(AccountDto accountDto) throws Exception {
+        Account account = new Account();
+        BeanUtils.copyProperties(accountDto, account);
+        accountDao.insert(account);
+    }
 }

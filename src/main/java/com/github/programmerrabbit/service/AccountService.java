@@ -7,4 +7,6 @@ import com.github.programmerrabbit.dto.AccountDto;
  */
 public interface AccountService {
     AccountDto getAccount(AccountDto accountDto) throws Exception;
+
+    void addAccount(AccountDto accountDto) throws Exception;
 }
