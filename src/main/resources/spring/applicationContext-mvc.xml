@@ -11,14 +11,12 @@
 
     <mvc:resources mapping="/webjars/**" location="/webjars/"/>
     <mvc:resources mapping="/demo/**" location="/demo/"/>
+    <mvc:resources mapping="/index/**" location="/index/"/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/resources/**"/>
-            <mvc:exclude-mapping path="/resources/login.html"/>
-            <mvc:exclude-mapping path="/resources/register.html"/>
-            <mvc:exclude-mapping path="/resources/error.html"/>
             <bean class="com.github.programmerrabbit.web.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

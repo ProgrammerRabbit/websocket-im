@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -17,18 +18,25 @@ public class LoginController {
     private AccountService accountService;
 
     @RequestMapping("/login")
-    public String login(AccountDto accountDto, HttpSession httpSession) {
+    public String login(AccountDto accountDto, HttpServletRequest request) {
         try {
+            String code = (String) request.getSession().getAttribute("s_code");
+            if (code == null || !code.equalsIgnoreCase(accountDto.getVerifyCode())) {
+                request.setAttribute("r_error", "VERIFY CODE error!<br><br>");
+                return "forward:/index/login.jsp";
+            }
+
             AccountDto dbAccountDto = accountService.getAccount(accountDto);
             if (dbAccountDto == null) {
-                return "redirect:/resources/login.html";
+                request.setAttribute("r_error", "USERNAME or PASSWORD error!<br><br>");
+                return "forward:/index/login.jsp";
             } else {
-                httpSession.setAttribute("s_user", dbAccountDto);
-                return "redirect:/resources/page/chat.html";
+                request.getSession().setAttribute("s_user", dbAccountDto);
+                return "redirect:/resources/chat.html";
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/resources/error.html";
+            return "redirect:/index/error.html";
         }
     }
 }

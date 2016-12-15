@@ -12,4 +12,5 @@ public class AccountDto implements Serializable {
     private int id;
     private String username;
     private String password;
+    private String verifyCode;
 }

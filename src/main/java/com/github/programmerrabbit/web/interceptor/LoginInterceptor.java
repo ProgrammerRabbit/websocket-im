@@ -14,7 +14,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         AccountDto accountDto = (AccountDto) request.getSession().getAttribute("s_user");
         if (accountDto == null) {
-            response.sendRedirect(request.getContextPath() + "/resources/login.html");
+            request.setAttribute("s_error", "Login, Please!");
+            request.getRequestDispatcher("/index/login.jsp").forward(request, response);
             return false;
         }
         return true;

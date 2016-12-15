@@ -9,4 +9,6 @@ public interface AccountService {
     AccountDto getAccount(AccountDto accountDto) throws Exception;
 
     void addAccount(AccountDto accountDto) throws Exception;
+
+    boolean isUsernameRegistered(String username) throws Exception;
 }

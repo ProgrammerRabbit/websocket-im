@@ -33,4 +33,9 @@ public class AccountServiceImpl implements AccountService {
         BeanUtils.copyProperties(accountDto, account);
         accountDao.insert(account);
     }
+
+    public boolean isUsernameRegistered(String username) throws Exception {
+        List<Account> accountList = accountDao.getByField("username", username);
+        return accountList.size() != 0;
+    }
 }
