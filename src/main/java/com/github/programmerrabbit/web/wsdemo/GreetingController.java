@@ -1,8 +1,6 @@
-package com.github.programmerrabbit.web.wsdemo.controller;
+package com.github.programmerrabbit.web.wsdemo;
 
 import com.github.programmerrabbit.test.Demo;
-import com.github.programmerrabbit.web.wsdemo.dto.Greeting;
-import com.github.programmerrabbit.web.wsdemo.dto.HelloMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;

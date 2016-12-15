@@ -1,6 +1,6 @@
 package com.github.programmerrabbit.dao;
 
-import com.github.programmerrabbit.entity.Account;
+import com.github.programmerrabbit.dao.entity.Account;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -16,8 +16,8 @@ public interface AccountDao {
     @Select("SELECT * FROM Account WHERE id = #{id}")
     Account getById(@Param("id") int id);
 
-    @Select("SELECT * FROM Account WHERE #{fieldName} = #{fieldValue}")
-    List<Account> getByField(@Param("fieldName") String filedName, @Param("fieldValue") Object fieldValue);
+    @Select("SELECT * FROM Account WHERE ${fieldName} = #{fieldValue}")
+    List<Account> getByField(@Param("fieldName") String filedName, @Param("fieldValue") String fieldValue);
 
     void updateById(@Param("id") int id, @Param("entity") Account entity);
 

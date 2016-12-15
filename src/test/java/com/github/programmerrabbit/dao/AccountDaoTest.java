@@ -1,7 +1,7 @@
 package com.github.programmerrabbit.dao;
 
 import com.github.programmerrabbit.BaseTest;
-import com.github.programmerrabbit.entity.Account;
+import com.github.programmerrabbit.dao.entity.Account;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -30,7 +30,7 @@ public class AccountDaoTest extends BaseTest {
 
     @Test
     public void getByField() throws Exception {
-        List<Account> accountList = accountDao.getByField("useranem", "rabbit");
+        List<Account> accountList = accountDao.getByField("username", "rabbit");
         for (Account account : accountList) {
             System.out.println(account.toString());
         }

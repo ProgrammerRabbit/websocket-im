@@ -1,4 +1,4 @@
-package com.github.programmerrabbit.entity;
+package com.github.programmerrabbit.dao.entity;
 
 import lombok.Data;
 

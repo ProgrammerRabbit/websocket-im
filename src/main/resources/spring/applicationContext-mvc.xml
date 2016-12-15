@@ -6,8 +6,19 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.github.programmerrabbit"/>
+
     <mvc:annotation-driven/>
-    <mvc:resources mapping="/webjars/**" location="/webjars/" />
-    <mvc:resources mapping="/resources/**" location="/resources/" />
-    <mvc:resources mapping="hello.html" location="hello.html" />
+
+    <mvc:resources mapping="/webjars/**" location="/webjars/"/>
+    <mvc:resources mapping="/demo/**" location="/demo/"/>
+    <mvc:resources mapping="/resources/**" location="/resources/"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/resources/**"/>
+            <mvc:exclude-mapping path="/resources/login.html"/>
+            <mvc:exclude-mapping path="/resources/register.html"/>
+            <bean class="com.github.programmerrabbit.web.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

@@ -1,4 +1,4 @@
-package com.github.programmerrabbit.web.wsdemo.config;
+package com.github.programmerrabbit.web.wsdemo;
 
 import com.github.programmerrabbit.test.Demo;
 import org.springframework.context.annotation.Configuration;

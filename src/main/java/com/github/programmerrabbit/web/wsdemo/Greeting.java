@@ -1,4 +1,4 @@
-package com.github.programmerrabbit.web.wsdemo.dto;
+package com.github.programmerrabbit.web.wsdemo;
 
 import com.github.programmerrabbit.test.Demo;
 
