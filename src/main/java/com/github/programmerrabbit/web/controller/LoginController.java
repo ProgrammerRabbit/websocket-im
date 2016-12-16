@@ -44,7 +44,9 @@ public class LoginController extends BaseController {
             }
 
             session.setAttribute("s_user", dbAccountDto);
-            return newModelAndView("index");
+            Map<String, Object> map = MapUtils.newHashMap();
+            map.put("user", dbAccountDto);
+            return newModelAndView("index", map);
         } catch (Exception e) {
             e.printStackTrace();
             return newModelAndView("error");

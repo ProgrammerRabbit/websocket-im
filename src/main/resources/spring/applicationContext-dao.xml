@@ -20,4 +20,9 @@
         <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
         <property name="mapperInterface" value="com.github.programmerrabbit.dao.AccountDao"/>
     </bean>
+
+    <bean id="contactDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        <property name="mapperInterface" value="com.github.programmerrabbit.dao.ContactDao"/>
+    </bean>
 </beans>

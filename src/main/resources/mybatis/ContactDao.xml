@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.programmerrabbit.dao.ContactDao">
+
+    <insert id="insert" parameterType="com.github.programmerrabbit.dao.entity.Contact">
+        INSERT INTO Contact
+        (
+            id,
+            oneUserId,
+            anotherUserId
+        )
+        VALUES
+        (
+            #{entity.id},
+            #{entity.oneUserId},
+            #{entity.anotherUserId}
+        )
+    </insert>
+
+    <update id="updateById">
+        UPDATE Contact
+        SET
+            id = #{entity.id},
+            oneUserId = #{entity.oneUserId},
+            anotherUserId = #{entity.anotherUserId}
+        WHERE
+        id = #{id}
+    </update>
+</mapper>
