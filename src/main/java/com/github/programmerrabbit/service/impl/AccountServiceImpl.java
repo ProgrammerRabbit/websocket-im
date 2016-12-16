@@ -28,7 +28,7 @@ public class AccountServiceImpl implements AccountService {
         if (accountList.size() == 1 && accountList.get(0).getPassword().equals(accountDto.getPassword())) {
             AccountDto dbAccountDto = new AccountDto();
             BeanUtils.copyProperties(accountList.get(0), dbAccountDto);
-            Set<AccountDto> contactList = contactService.getContacts(dbAccountDto.getId());
+            Set<AccountDto> contactList = contactService.getContactsWithCache(dbAccountDto.getId());
             dbAccountDto.setContacts(contactList);
             return dbAccountDto;
         }
