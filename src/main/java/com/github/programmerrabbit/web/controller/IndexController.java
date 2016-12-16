@@ -8,11 +8,9 @@ import org.springframework.web.servlet.ModelAndView;
  * Created by Rabbit on 2016/12/16.
  */
 @Controller
-public class IndexController {
+public class IndexController extends BaseController {
     @RequestMapping("/index")
     public ModelAndView index() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
-        return modelAndView;
+        return newModelAndView("index");
     }
 }

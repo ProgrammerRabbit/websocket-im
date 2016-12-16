@@ -6,3 +6,13 @@
     color: red;
     display: none;
 }
+
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+a:hover {
+    color: white;
+    background-color: grey;
+}
