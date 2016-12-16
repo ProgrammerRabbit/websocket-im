@@ -3,6 +3,7 @@ package com.github.programmerrabbit.web.interceptor;
 import com.github.programmerrabbit.dto.AccountDto;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.ModelAndViewDefiningException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,9 +15,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         AccountDto accountDto = (AccountDto) request.getSession().getAttribute("s_user");
         if (accountDto == null) {
-            request.setAttribute("s_error", "Login, Please!");
-            request.getRequestDispatcher("/index/login.jsp").forward(request, response);
-            return false;
+            ModelAndView modelAndView = new ModelAndView();
+            modelAndView.addObject("errorHint", "Login, Please!<br><br>");
+            modelAndView.setViewName("login");
+            throw new ModelAndViewDefiningException(modelAndView);
         }
         return true;
     }

@@ -6,37 +6,51 @@ import com.github.programmerrabbit.service.AccountService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by Rabbit on 2016/12/15.
  */
 @Controller
+@RequestMapping("/visit")
 public class RegisterController {
     @Resource
     private AccountService accountService;
 
     @RequestMapping("/register")
-    public String register(AccountDto accountDto, HttpServletRequest request) {
+    public ModelAndView register() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("register");
+        return modelAndView;
+    }
+
+    @RequestMapping("/doRegister")
+    public ModelAndView register(AccountDto accountDto, HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView();
         try {
-            String code = (String) request.getSession().getAttribute("s_code");
+            String code = (String) session.getAttribute("s_code");
             if (code == null || !code.equalsIgnoreCase(accountDto.getVerifyCode())) {
-                request.setAttribute("r_error", "VERIFY CODE error!<br><br>");
-                return "forward:/index/register.jsp";
+                modelAndView.addObject("errorHint", "VERIFY CODE error!<br><br>");
+                modelAndView.setViewName("register");
+                return modelAndView;
             }
 
             if (accountService.isUsernameRegistered(accountDto.getUsername())) {
-                request.setAttribute("r_error", "USERNAME is already registered!<br><br>");
-                return "forward:/index/register.jsp";
+                modelAndView.addObject("errorHint", "USERNAME is already registered!<br><br>");
+                modelAndView.setViewName("register");
+                return modelAndView;
             } else {
                 accountService.addAccount(accountDto);
-                return "redirect:/index/login.jsp";
+                modelAndView.setViewName("login");
+                return modelAndView;
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return "redirect:/index/error.html";
+            modelAndView.setViewName("error");
+            return modelAndView;
         }
     }
 

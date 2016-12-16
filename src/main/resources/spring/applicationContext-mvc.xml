@@ -8,15 +8,34 @@
     <context:component-scan base-package="com.github.programmerrabbit"/>
 
     <mvc:annotation-driven/>
+    
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="template_update_delay">0</prop>
+                <prop key="default_encoding">UTF-8</prop>
+                <prop key="classic_compatible">true</prop>
+                <prop key="template_exception_handler">ignore</prop>
+            </props>
+        </property>
+    </bean>
+
+    <mvc:view-resolvers>
+        <bean id="freeMarkerViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+            <property name="suffix" value=".ftl"/>
+            <property name="contentType" value="text/html;charset=UTF-8"/>
+        </bean>
+    </mvc:view-resolvers>
 
     <mvc:resources mapping="/webjars/**" location="/webjars/"/>
-    <mvc:resources mapping="/demo/**" location="/demo/"/>
-    <mvc:resources mapping="/index/**" location="/index/"/>
+    <mvc:resources mapping="/wsdemo/**" location="/wsdemo/"/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/resources/**"/>
+            <mvc:mapping path="/*"/>
+            <mvc:exclude-mapping path="/visit/*"/>
             <bean class="com.github.programmerrabbit.web.interceptor.LoginInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>

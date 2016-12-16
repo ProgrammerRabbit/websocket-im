@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chat</title>
+    <title>Index</title>
 </head>
 <body>
-Chat Page
+<h1>WebSocket IM</h1>
+Index Page.
 </body>
 </html>
