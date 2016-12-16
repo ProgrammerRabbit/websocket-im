@@ -1,5 +1,6 @@
 package com.github.programmerrabbit.dao;
 
+import com.github.programmerrabbit.BaseTest;
 import com.github.programmerrabbit.dao.entity.Contact;
 import org.junit.Test;
 
@@ -11,8 +12,7 @@ import java.util.List;
  * Author: ProgrammerRabbit
  * http://github.com/ProgrammerRabbit
  */
-// TODO add spring4junit support
-public class ContactDaoTest {
+public class ContactDaoTest extends BaseTest {
     @Resource
     private ContactDao dao;
 
@@ -21,7 +21,8 @@ public class ContactDaoTest {
     @Test
     public void insert() throws Exception {
         Contact entity = new Contact();
-        // TODO fill entity
+        entity.setOneUserId(26);
+        entity.setAnotherUserId(35);
         dao.insert(entity);
     }
 

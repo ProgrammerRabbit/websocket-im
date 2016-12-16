@@ -3,7 +3,7 @@ package com.github.programmerrabbit.dto;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Rabbit on 2016/12/15.
@@ -15,5 +15,5 @@ public class AccountDto implements Serializable {
     private String password;
     private String verifyCode;
 
-    private List<AccountDto> friedList;
+    private Set<AccountDto> contacts;
 }
