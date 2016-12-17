@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Index</title>
     <script src="/webjars/jquery/3.1.0/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
     <script src="/resources/js/common.js"></script>
     <script src="/resources/js/index.js"></script>
     <link type="text/css" href="/resources/css/main.css" rel="stylesheet"/>
@@ -15,7 +17,7 @@ Hi, ${user.username}! |
 <a href="/logout">Logout</a><br><br>
 <button onclick="clickRequestBox();">RequestBox</button>
 &nbsp;<span id="requestBoxHint"></span><br><br>
-<div id="requestBox" open="none"></div><br>
+<div id="requestBox" open="false"></div><br>
 CONTACTS:<br>
 <#list user.contacts as contact>
     ${contact.username}<br>

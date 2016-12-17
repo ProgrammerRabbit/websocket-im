@@ -5,6 +5,8 @@ import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.dto.ResponseDto;
 import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.RequestService;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +25,15 @@ public class RequestController extends BaseController {
 
     @Resource
     private AccountService accountService;
+
+    @Resource
+    private SimpMessagingTemplate simpMessagingTemplate;
+
+    @RequestMapping("/sendRequest")
+    public void sendRequest(RequestDto requestDto) {
+        String destination = "/request/" + requestDto.getAcceptUserId();
+        simpMessagingTemplate.convertAndSend(destination, requestDto);
+    }
 
     @RequestMapping("/getRequests")
     @ResponseBody

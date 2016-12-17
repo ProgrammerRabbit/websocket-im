@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by Rabbit on 2016/12/17.
@@ -25,11 +26,11 @@ public class ContactController {
 
     @RequestMapping("/addContact")
     @ResponseBody
-    public ResponseDto<Boolean> addContact(String username, HttpSession session) {
+    public ResponseDto<Boolean> addContact(String username, HttpServletRequest request, HttpServletResponse response) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
             if (accountService.isUsernameRegistered(username)) {
-                AccountDto accountDto = (AccountDto) session.getAttribute("s_user");
+                AccountDto accountDto = (AccountDto) request.getSession().getAttribute("s_user");
                 AccountDto contactAccountDto = accountService.getSimpleAccountByUsername(username);
                 if (accountDto.getContacts().contains(contactAccountDto)) {
                     responseDto.setContent(false);
@@ -41,6 +42,7 @@ public class ContactController {
                     requestDto.setRequestUserName(accountDto.getUsername());
                     requestDto.setAcceptUserId(contactAccountDto.getId());
                     requestService.addRequest(requestDto);
+                    request.getRequestDispatcher("/sendRequest").forward(request, response);
                 }
             } else {
                 responseDto.setContent(false);

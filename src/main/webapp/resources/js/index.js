@@ -86,12 +86,10 @@ function getRequests() {
                 var innerHtml = "";
                 var requestList = data.content;
                 for (var i = 0; i < requestList.length; i++) {
-                    innerHtml += requestList[i].requestUserName;
-                    innerHtml += "&nbsp;<a onclick='acceptRequest(" + requestList[i].id + ");'>ACCEPT</a>&nbsp;|";
-                    innerHtml += "&nbsp;<a onclick='rejectRequest(" + requestList[i].id + ");'>REJECT</a><br>";
+                    innerHtml += getRequestLine(requestList[i]);
                 }
                 if (innerHtml == "") {
-                    innerHtml = "There is no request";
+                    innerHtml = "There is no request.";
                     requestBoxHint.innerHTML = "No request :)";
                 } else {
                     requestBoxHint.innerHTML = requestList.length + " request" + (requestList.length == 1 ?  "" : "s") + ", click to open :)";
@@ -102,6 +100,35 @@ function getRequests() {
     });
 }
 
+function getRequestLine(request) {
+    var innerHtml = "";
+    innerHtml += request.requestUserName;
+    innerHtml += "&nbsp;<a onclick='acceptRequest(" + request.id + ");'>ACCEPT</a>&nbsp;|";
+    innerHtml += "&nbsp;<a onclick='rejectRequest(" + request.id + ");'>REJECT</a><br>";
+    return innerHtml;
+}
+
+var stompClient = null;
+
+function listenRequest() {
+    var userIdHidden = document.getElementById("userIdHidden");
+    var requestBox = document.getElementById("requestBox");
+    var requestBoxHint = document.getElementById("requestBoxHint");
+    var sockJS = new SockJS();
+    stompClient = Stomp.over(sockJS);
+    stompClient.connect({}, function (frame) {
+        console.log("Connected: " + frame);
+        stompClient.subscribe("/topic/request/" + userIdHidden.value, function (request) {
+            if (requestBox.innerHTML == "There is no request.") {
+                requestBox.innerHTML = getRequestLine(request);
+            } else {
+                requestBox.innerHTML += getRequestLine(request);
+            }
+            requestBoxHint.innerHTML = "New request :)";
+        })
+    })
+}
+
 window.onload = function () {
     var errorHint = document.getElementById("errorHint");
     if (errorHint.innerHTML != "") {
@@ -109,4 +136,5 @@ window.onload = function () {
     }
 
     getRequests();
+    listenRequest();
 };
