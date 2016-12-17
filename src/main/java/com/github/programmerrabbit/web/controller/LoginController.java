@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -36,7 +37,7 @@ public class LoginController extends BaseController {
                 return newModelAndView("login", map);
             }
 
-            AccountDto dbAccountDto = accountService.getAccount(accountDto);
+            AccountDto dbAccountDto = accountService.login(accountDto);
             if (dbAccountDto == null) {
                 Map<String, Object> map = MapUtils.newHashMap();
                 map.put("errorHint", "USERNAME or PASSWORD error!<br><br>");
@@ -44,9 +45,7 @@ public class LoginController extends BaseController {
             }
 
             session.setAttribute("s_user", dbAccountDto);
-            Map<String, Object> map = MapUtils.newHashMap();
-            map.put("user", dbAccountDto);
-            return newModelAndView("index", map);
+            return new ModelAndView(new RedirectView("/index"));
         } catch (Exception e) {
             e.printStackTrace();
             return newModelAndView("error");

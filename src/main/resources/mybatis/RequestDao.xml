@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.programmerrabbit.dao.RequestDao">
+
+    <insert id="insert" parameterType="com.github.programmerrabbit.dao.entity.Request">
+        INSERT INTO Request
+        (
+            id,
+            requestUserId,
+            requestUserName,
+            acceptUserId,
+            status
+        )
+        VALUES
+        (
+            #{entity.id},
+            #{entity.requestUserId},
+            #{entity.requestUserName},
+            #{entity.acceptUserId},
+            #{entity.status}
+        )
+    </insert>
+
+    <update id="updateById">
+        UPDATE Request
+        SET
+            id = #{entity.id},
+            requestUserId = #{entity.requestUserId},
+            requestUserName = #{entity.requestUserName},
+            acceptUserId = #{entity.acceptUserId},
+            status = #{entity.status}
+        WHERE
+        id = #{id}
+    </update>
+</mapper>

@@ -61,12 +61,6 @@ function doSubmit() {
     return true;
 }
 
-function showErrorHint(text) {
-    var errorHint = document.getElementById("errorHint");
-    errorHint.innerHTML = text;
-    errorHint.style.display = "block";
-}
-
 window.onload = function () {
     var errorHint = document.getElementById("errorHint");
     if (errorHint.innerHTML != "") {

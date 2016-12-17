@@ -9,4 +9,5 @@ import lombok.Data;
 public class ResponseDto<T> {
     private T content;
     private int code = 200;
+    private String message = "";
 }

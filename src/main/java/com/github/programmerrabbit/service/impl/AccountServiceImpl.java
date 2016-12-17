@@ -23,14 +23,32 @@ public class AccountServiceImpl implements AccountService {
     @Resource
     private ContactService contactService;
 
-    public AccountDto getAccount(AccountDto accountDto) throws Exception {
-        List<Account> accountList = accountDao.getByField("username", accountDto.getUsername());
-        if (accountList.size() == 1 && accountList.get(0).getPassword().equals(accountDto.getPassword())) {
-            AccountDto dbAccountDto = new AccountDto();
-            BeanUtils.copyProperties(accountList.get(0), dbAccountDto);
-            Set<AccountDto> contactList = contactService.getContactsWithCache(dbAccountDto.getId());
-            dbAccountDto.setContacts(contactList);
+    public AccountDto login(AccountDto accountDto) throws Exception {
+        AccountDto dbAccountDto = getSimpleAccountByUsername(accountDto.getUsername());
+        if (dbAccountDto != null && accountDto.getPassword().equals(accountDto.getPassword())) {
+            Set<AccountDto> contacts = contactService.getContactsWithCache(dbAccountDto.getId());
+            dbAccountDto.setContacts(contacts);
             return dbAccountDto;
+        }
+        return null;
+    }
+
+    public AccountDto getSimpleAccountByUsername(String username) throws Exception {
+        List<Account> accountList = accountDao.getByField("username", username);
+        if (accountList.size() == 1) {
+            AccountDto accountDto = new AccountDto();
+            BeanUtils.copyProperties(accountList.get(0), accountDto);
+            return accountDto;
+        }
+        return null;
+    }
+
+    public AccountDto getSimpleAccountById(int id) throws Exception {
+        List<Account> accountList = accountDao.getByField("id", String.valueOf(id));
+        if (accountList.size() == 1) {
+            AccountDto accountDto = new AccountDto();
+            BeanUtils.copyProperties(accountList.get(0), accountDto);
+            return accountDto;
         }
         return null;
     }
