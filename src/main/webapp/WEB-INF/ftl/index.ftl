@@ -13,9 +13,9 @@
 <input id="userId" type="hidden" value="${user.id}"/>
 Hi, ${user.username}! |
 <a href="/logout">Logout</a><br><br>
-<button onclick="openRequestBox();">RequestBox</button>
-&nbsp;<span id="requestBoxHint">Click to open:)</span><br><br>
-<div id="requestBox" open="false"></div><br>
+<button onclick="clickRequestBox();">RequestBox</button>
+&nbsp;<span id="requestBoxHint"></span><br><br>
+<div id="requestBox" open="none"></div><br>
 CONTACTS:<br>
 <#list user.contacts as contact>
     ${contact.username}<br>

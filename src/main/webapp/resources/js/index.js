@@ -29,7 +29,7 @@ function addContact() {
     });
 }
 
-function openRequestBox() {
+function clickRequestBox() {
     var requestBoxHint = document.getElementById("requestBoxHint");
     var requestBox = document.getElementById("requestBox");
     if (requestBox.open == "true") {
@@ -37,28 +37,9 @@ function openRequestBox() {
         requestBox.style.display = "none";
         requestBox.open = "false";
     } else {
-        $.ajax({
-            url: "/getRequests",
-            dataType: "json",
-            success: function (data) {
-                if (data.code == 200) {
-                    var innerHtml = "";
-                    var requestList = data.content;
-                    for (var i = 0; i < requestList.length; i++) {
-                        innerHtml += requestList[i].requestUserName;
-                        innerHtml += "&nbsp;<a onclick='acceptRequest(" + requestList[i].id + ");'>ACCEPT</a>&nbsp;|";
-                        innerHtml += "&nbsp;<a onclick='rejectRequest(" + requestList[i].id + ");'>REJECT</a><br>";
-                    }
-                    if (innerHtml == "") {
-                        innerHtml = "There is no request";
-                    }
-                    requestBoxHint.innerHTML = "Click to close :)";
-                    requestBox.innerHTML = innerHtml;
-                    requestBox.style.display = "block";
-                    requestBox.open = "true";
-                }
-            }
-        });
+        requestBoxHint.innerHTML = "Click to close :)";
+        requestBox.style.display = "block";
+        requestBox.open = "true";
     }
 }
 
@@ -94,9 +75,38 @@ function rejectRequest(requestId) {
     });
 }
 
+function getRequests() {
+    var requestBox = document.getElementById("requestBox");
+    var requestBoxHint = document.getElementById("requestBoxHint");
+    $.ajax({
+        url: "/getRequests",
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                var innerHtml = "";
+                var requestList = data.content;
+                for (var i = 0; i < requestList.length; i++) {
+                    innerHtml += requestList[i].requestUserName;
+                    innerHtml += "&nbsp;<a onclick='acceptRequest(" + requestList[i].id + ");'>ACCEPT</a>&nbsp;|";
+                    innerHtml += "&nbsp;<a onclick='rejectRequest(" + requestList[i].id + ");'>REJECT</a><br>";
+                }
+                if (innerHtml == "") {
+                    innerHtml = "There is no request";
+                    requestBoxHint.innerHTML = "No request :)";
+                } else {
+                    requestBoxHint.innerHTML = requestList.length + " request" + (requestList.length == 1 ?  "" : "s") + ", click to open :)";
+                }
+                requestBox.innerHTML = innerHtml;
+            }
+        }
+    });
+}
+
 window.onload = function () {
     var errorHint = document.getElementById("errorHint");
     if (errorHint.innerHTML != "") {
         errorHint.style.display = "block";
     }
+
+    getRequests();
 };
