@@ -10,10 +10,15 @@
 </head>
 <body>
 <h1>WebSocket IM</h1>
-Hi, ${user.username}! | <a href="/logout">Logout</a> | <a href="#">RequestBox</a><br><br>
+<input id="userId" type="hidden" value="${user.id}"/>
+Hi, ${user.username}! |
+<a href="/logout">Logout</a><br><br>
+<button onclick="openRequestBox();">RequestBox</button>
+&nbsp;<span id="requestBoxHint">Click to open:)</span><br><br>
+<div id="requestBox" open="false"></div><br>
 CONTACTS:<br>
 <#list user.contacts as contact>
-${contact.username}<br>
+    ${contact.username}<br>
 </#list><br>
 <input id="contact" type="text"/>
 <button onclick="addContact();">ADD CONTACT</button>

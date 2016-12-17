@@ -7,6 +7,10 @@
     display: none;
 }
 
+#requestBox {
+    display: none;
+}
+
 a {
     color: blue;
     text-decoration: none;

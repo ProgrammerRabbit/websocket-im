@@ -3,6 +3,7 @@ package com.github.programmerrabbit.web.controller;
 import com.github.programmerrabbit.dto.AccountDto;
 import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.dto.ResponseDto;
+import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.RequestService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,9 @@ import java.util.List;
 public class RequestController extends BaseController {
     @Resource
     private RequestService requestService;
+
+    @Resource
+    private AccountService accountService;
 
     @RequestMapping("/getRequests")
     @ResponseBody
@@ -39,25 +43,42 @@ public class RequestController extends BaseController {
 
     @RequestMapping("/rejectRequest")
     @ResponseBody
-    public void rejectRequest(int requestId, int userId, HttpSession session) {
+    public ResponseDto<Boolean> rejectRequest(int requestId, int userId, HttpSession session) {
+        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
             if (isUserLegal(userId, session)) {
                 requestService.rejectRequest(requestId);
+                responseDto.setContent(true);
+            } else {
+                responseDto.setContent(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            responseDto.setCode(500);
         }
+        return responseDto;
     }
 
     @RequestMapping("/acceptRequest")
     @ResponseBody
-    public void acceptRequest(int requestId, int userId, HttpSession session) {
+    public ResponseDto<Boolean> acceptRequest(int requestId, int userId, HttpSession session) {
+        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
             if (isUserLegal(userId, session)) {
-                requestService.acceptRequest(requestId);
+                int requestUserId = requestService.acceptRequest(requestId);
+                responseDto.setContent(true);
+
+                AccountDto contactAccountDto = accountService.getSimpleAccountById(requestUserId);
+                AccountDto accountDto = (AccountDto) session.getAttribute("s_user");
+                accountDto.getContacts().add(contactAccountDto);
+                session.setAttribute("s_user", accountDto);
+            } else {
+                responseDto.setContent(false);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            responseDto.setCode(500);
         }
+        return responseDto;
     }
 }

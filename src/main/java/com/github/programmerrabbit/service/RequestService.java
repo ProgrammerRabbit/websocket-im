@@ -12,7 +12,7 @@ public interface RequestService {
 
     void rejectRequest(int requestId) throws Exception;
 
-    void acceptRequest(int requestId) throws Exception;
+    int acceptRequest(int requestId) throws Exception;
 
     void addRequest(RequestDto requestDto) throws Exception;
 }

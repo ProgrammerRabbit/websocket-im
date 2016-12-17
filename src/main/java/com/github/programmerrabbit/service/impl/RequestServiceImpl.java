@@ -39,13 +39,16 @@ public class RequestServiceImpl implements RequestService {
         requestDao.deleteById(requestId);
     }
 
-    public void acceptRequest(int requestId) throws Exception {
-        requestDao.deleteById(requestId);
+    public int acceptRequest(int requestId) throws Exception {
         Request request = requestDao.getById(requestId);
         ContactDto contactPair = new ContactDto();
         contactPair.setOneUserId(request.getRequestUserId());
         contactPair.setAnotherUserId(request.getAcceptUserId());
         contactService.addContactPair(contactPair);
+
+        requestDao.deleteById(requestId);
+
+        return request.getRequestUserId();
     }
 
     public void addRequest(RequestDto requestDto) throws Exception {
