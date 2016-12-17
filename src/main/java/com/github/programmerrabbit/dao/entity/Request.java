@@ -13,7 +13,6 @@ public class Request {
     private int requestUserId;
     private String requestUserName;
     private int acceptUserId;
-    private int status;
 
     public static void main(String[] args) {
         ProjectPath projectPath = new ProjectPath();

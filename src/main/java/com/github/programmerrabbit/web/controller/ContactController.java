@@ -1,8 +1,10 @@
 package com.github.programmerrabbit.web.controller;
 
 import com.github.programmerrabbit.dto.AccountDto;
+import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.dto.ResponseDto;
 import com.github.programmerrabbit.service.AccountService;
+import com.github.programmerrabbit.service.RequestService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,6 +20,9 @@ public class ContactController {
     @Resource
     private AccountService accountService;
 
+    @Resource
+    private RequestService requestService;
+
     @RequestMapping("/addContact")
     @ResponseBody
     public ResponseDto<Boolean> addContact(String username, HttpSession session) {
@@ -31,7 +36,11 @@ public class ContactController {
                     responseDto.setMessage("\"" + username + "\" is already your contact!");
                 } else {
                     responseDto.setContent(true);
-                    // TODO add contact
+                    RequestDto requestDto = new RequestDto();
+                    requestDto.setRequestUserId(accountDto.getId());
+                    requestDto.setRequestUserName(accountDto.getUsername());
+                    requestDto.setAcceptUserId(contactAccountDto.getId());
+                    requestService.addRequest(requestDto);
                 }
             } else {
                 responseDto.setContent(false);

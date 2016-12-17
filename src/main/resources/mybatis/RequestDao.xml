@@ -8,16 +8,14 @@
             id,
             requestUserId,
             requestUserName,
-            acceptUserId,
-            status
+            acceptUserId
         )
         VALUES
         (
             #{entity.id},
             #{entity.requestUserId},
             #{entity.requestUserName},
-            #{entity.acceptUserId},
-            #{entity.status}
+            #{entity.acceptUserId}
         )
     </insert>
 
@@ -27,8 +25,7 @@
             id = #{entity.id},
             requestUserId = #{entity.requestUserId},
             requestUserName = #{entity.requestUserName},
-            acceptUserId = #{entity.acceptUserId},
-            status = #{entity.status}
+            acceptUserId = #{entity.acceptUserId}
         WHERE
         id = #{id}
     </update>

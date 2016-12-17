@@ -1,6 +1,7 @@
 package com.github.programmerrabbit.service;
 
 import com.github.programmerrabbit.dto.AccountDto;
+import com.github.programmerrabbit.dto.ContactDto;
 
 import java.util.Set;
 
@@ -11,4 +12,6 @@ public interface ContactService {
     Set<AccountDto> getContacts(int id) throws Exception;
 
     Set<AccountDto> getContactsWithCache(int id) throws Exception;
+
+    void addContactPair(ContactDto contactDto) throws Exception;
 }

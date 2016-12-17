@@ -6,6 +6,7 @@ import com.github.programmerrabbit.cache.ExpireTypeEnum;
 import com.github.programmerrabbit.dao.ContactDao;
 import com.github.programmerrabbit.dao.entity.Contact;
 import com.github.programmerrabbit.dto.AccountDto;
+import com.github.programmerrabbit.dto.ContactDto;
 import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.ContactService;
 import com.github.programmerrabbit.utils.CollectionUtils;
@@ -55,5 +56,12 @@ public class ContactServiceImpl implements ContactService {
                 return getContacts(id);
             }
         });
+    }
+
+    public void addContactPair(ContactDto contactDto) throws Exception {
+        Contact contactPair = new Contact();
+        contactPair.setOneUserId(contactDto.getOneUserId());
+        contactPair.setAnotherUserId(contactDto.getAnotherUserId());
+        contactDao.insert(contactPair);
     }
 }

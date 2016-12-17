@@ -1,7 +1,9 @@
 package com.github.programmerrabbit.web.controller;
 
+import com.github.programmerrabbit.dto.AccountDto;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,5 +22,10 @@ public class BaseController {
         }
         modelAndView.setViewName(view);
         return modelAndView;
+    }
+
+    protected boolean isUserLegal(int userId, HttpSession session) {
+        AccountDto accountDto = (AccountDto) session.getAttribute("s_user");
+        return accountDto.getId() == userId;
     }
 }
