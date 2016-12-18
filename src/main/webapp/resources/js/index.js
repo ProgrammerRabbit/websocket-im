@@ -111,18 +111,19 @@ function getRequestLine(request) {
 var stompClient = null;
 
 function listenRequest() {
-    var userIdHidden = document.getElementById("userIdHidden");
+    var userIdHidden = document.getElementById("userId");
     var requestBox = document.getElementById("requestBox");
     var requestBoxHint = document.getElementById("requestBoxHint");
-    var sockJS = new SockJS();
+    var sockJS = new SockJS('/ws');
     stompClient = Stomp.over(sockJS);
     stompClient.connect({}, function (frame) {
         console.log("Connected: " + frame);
         stompClient.subscribe("/topic/request/" + userIdHidden.value, function (request) {
+            var data = JSON.parse(request.body);
             if (requestBox.innerHTML == "There is no request.") {
-                requestBox.innerHTML = getRequestLine(request);
+                requestBox.innerHTML = getRequestLine(data);
             } else {
-                requestBox.innerHTML += getRequestLine(request);
+                requestBox.innerHTML += getRequestLine(data);
             }
             requestBoxHint.innerHTML = "New request :)";
         })

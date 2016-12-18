@@ -5,6 +5,7 @@ import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.dto.ResponseDto;
 import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.RequestService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,6 +25,9 @@ public class ContactController {
     @Resource
     private RequestService requestService;
 
+    @Resource
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     @RequestMapping("/addContact")
     @ResponseBody
     public ResponseDto<Boolean> addContact(String username, HttpServletRequest request, HttpServletResponse response) {
@@ -42,7 +46,9 @@ public class ContactController {
                     requestDto.setRequestUserName(accountDto.getUsername());
                     requestDto.setAcceptUserId(contactAccountDto.getId());
                     requestService.addRequest(requestDto);
-                    request.getRequestDispatcher("/sendRequest").forward(request, response);
+
+                    String destination = "/topic/request/" + requestDto.getAcceptUserId();
+                    simpMessagingTemplate.convertAndSend(destination, requestDto);
                 }
             } else {
                 responseDto.setContent(false);

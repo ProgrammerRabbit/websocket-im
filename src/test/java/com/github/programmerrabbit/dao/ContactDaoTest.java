@@ -24,6 +24,7 @@ public class ContactDaoTest extends BaseTest {
         entity.setOneUserId(26);
         entity.setAnotherUserId(35);
         dao.insert(entity);
+        System.out.println(entity.getId());
     }
 
     @Test

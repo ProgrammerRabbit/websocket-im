@@ -20,6 +20,7 @@ public class AccountDaoTest extends BaseTest {
         account.setUsername("rabbit");
         account.setPassword("rabbit");
         accountDao.insert(account);
+        System.out.println(account.getId());
     }
 
     @Test

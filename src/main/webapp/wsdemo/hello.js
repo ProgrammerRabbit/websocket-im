@@ -27,7 +27,7 @@ function disconnect() {
 
 function sendName() {
     var name = document.getElementById('name').value;
-    stompClient.send('/app/hello', {}, JSON.stringify({'name' : name}));
+    stompClient.send('//hello', {}, JSON.stringify({'name' : name}));
 }
 
 function showGreeting(message) {

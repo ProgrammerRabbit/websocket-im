@@ -23,6 +23,7 @@ public class RequestDaoTest extends BaseTest {
         Request entity = new Request();
         // TODO fill entity
         dao.insert(entity);
+        System.out.println(entity.getId());
     }
 
     @Test
