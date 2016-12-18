@@ -63,5 +63,7 @@ public class ContactServiceImpl implements ContactService {
         contactPair.setOneUserId(contactDto.getOneUserId());
         contactPair.setAnotherUserId(contactDto.getAnotherUserId());
         contactDao.insert(contactPair);
+        contactDto.setId(contactPair.getId());
+        cache.removeAll();
     }
 }

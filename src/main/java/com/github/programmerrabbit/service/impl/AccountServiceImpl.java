@@ -57,6 +57,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         BeanUtils.copyProperties(accountDto, account);
         accountDao.insert(account);
+        accountDto.setId(account.getId());
     }
 
     public boolean isUsernameRegistered(String username) throws Exception {

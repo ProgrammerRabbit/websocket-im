@@ -32,12 +32,13 @@ function addContact() {
 function clickRequestBox() {
     var requestBoxHint = document.getElementById("requestBoxHint");
     var requestBox = document.getElementById("requestBox");
+    requestBoxHint.style.color = "black";
     if (requestBox.open == "true") {
-        requestBoxHint.innerHTML = "Click to open :)";
+        requestBoxHint.innerHTML = "Click to open";
         requestBox.style.display = "none";
         requestBox.open = "false";
     } else {
-        requestBoxHint.innerHTML = "Click to close :)";
+        requestBoxHint.innerHTML = "Click to close";
         requestBox.style.display = "block";
         requestBox.open = "true";
     }
@@ -90,9 +91,9 @@ function getRequests() {
                 }
                 if (innerHtml == "") {
                     innerHtml = "There is no request.";
-                    requestBoxHint.innerHTML = "No request :)";
+                    requestBoxHint.innerHTML = "No request";
                 } else {
-                    requestBoxHint.innerHTML = requestList.length + " request" + (requestList.length == 1 ?  "" : "s") + ", click to open :)";
+                    requestBoxHint.innerHTML = requestList.length + " request" + (requestList.length == 1 ?  "" : "s") + ", click to open";
                 }
                 requestBox.innerHTML = innerHtml;
             }
@@ -125,7 +126,8 @@ function listenRequest() {
             } else {
                 requestBox.innerHTML += getRequestLine(data);
             }
-            requestBoxHint.innerHTML = "New request :)";
+            requestBoxHint.style.color = "red";
+            requestBoxHint.innerHTML = "New request";
         })
     })
 }

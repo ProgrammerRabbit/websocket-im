@@ -39,6 +39,9 @@ public class ContactController {
                 if (accountDto.getContacts().contains(contactAccountDto)) {
                     responseDto.setContent(false);
                     responseDto.setMessage("\"" + username + "\" is already your contact!");
+                } else if (accountDto.getId() == contactAccountDto.getId()) {
+                    responseDto.setContent(false);
+                    responseDto.setMessage("You can't add yourself as your contact!");
                 } else {
                     responseDto.setContent(true);
                     RequestDto requestDto = new RequestDto();

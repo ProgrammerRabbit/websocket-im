@@ -55,5 +55,6 @@ public class RequestServiceImpl implements RequestService {
         Request request = new Request();
         BeanUtils.copyProperties(requestDto, request);
         requestDao.insert(request);
+        requestDto.setId(request.getId());
     }
 }
