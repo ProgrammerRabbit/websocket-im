@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.programmerrabbit.dao.MessageDao">
+
+    <insert id="insert" parameterType="com.github.programmerrabbit.dao.entity.Message" useGeneratedKeys="true" keyProperty="entity.id">
+        INSERT INTO Message
+        (
+            id,
+            addTime,
+            fromId,
+            toId,
+            content,
+            status
+        )
+        VALUES
+        (
+            #{entity.id},
+            #{entity.addTime},
+            #{entity.fromId},
+            #{entity.toId},
+            #{entity.content},
+            #{entity.status}
+        )
+    </insert>
+
+    <update id="updateById">
+        UPDATE Message
+        SET
+            id = #{entity.id},
+            addTime = #{entity.addTime},
+            fromId = #{entity.fromId},
+            toId = #{entity.toId},
+            content = #{entity.content},
+            status = #{entity.status}
+        WHERE
+        id = #{id}
+    </update>
+</mapper>

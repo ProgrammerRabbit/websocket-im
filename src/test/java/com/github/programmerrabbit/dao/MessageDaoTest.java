@@ -1,9 +1,11 @@
-package ${daoPackage};
+package com.github.programmerrabbit.dao;
 
-import ${entityFullName};
+import com.github.programmerrabbit.BaseTest;
+import com.github.programmerrabbit.dao.entity.Message;
 import org.junit.Test;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -11,38 +13,41 @@ import java.util.List;
  * Author: ProgrammerRabbit
  * http://github.com/ProgrammerRabbit
  */
-// TODO add spring4junit support
-public class ${entityName}DaoTest {
+public class MessageDaoTest extends BaseTest {
     @Resource
-    private ${entityName}Dao dao;
+    private MessageDao dao;
 
-    private final static int ID = 1; // TODO modify the value
+    private final static int ID = 5; // TODO modify the value
 
     @Test
     public void insert() throws Exception {
-        ${entityName} entity = new ${entityName}();
-        // TODO fill entity
+        Message entity = new Message();
+        entity.setAddTime(new Date());
+        entity.setFromId(1);
+        entity.setToId(2);
+        entity.setContent("Hello");
+        entity.setStatus(0);
         dao.insert(entity);
         System.out.println(entity.getId());
     }
 
     @Test
     public void getById() throws Exception {
-        ${entityName} entity = dao.getById(ID);
+        Message entity = dao.getById(ID);
         System.out.println(entity.toString());
     }
 
     @Test
     public void getByField() throws Exception {
-        List<${entityName}> entityList = dao.getByField("", ""); // TODO fill fieldName and fieldValue
-        for (${entityName} entity : entityList) {
+        List<Message> entityList = dao.getByField("", ""); // TODO fill fieldName and fieldValue
+        for (Message entity : entityList) {
             System.out.println(entity.toString());
         }
     }
 
     @Test
     public void updateById() throws Exception {
-        ${entityName} entity = new ${entityName}();
+        Message entity = new Message();
         // TODO fill new entity
         dao.updateById(ID, entity);
     }
