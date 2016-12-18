@@ -30,56 +30,71 @@ public class RegisterController extends BaseController {
     }
 
     @RequestMapping(path = "/doRegister", method = RequestMethod.POST)
-    public ModelAndView register(AccountDto accountDto, HttpSession session) {
+    public ModelAndView register(AccountDto formAccount, HttpSession session) {
         try {
-            String code = (String) session.getAttribute("s_code");
+            String verifyCode = getVerifyCodeFromSession(session);
 
-            // verify code
-            if (code == null || !code.equalsIgnoreCase(accountDto.getVerifyCode())) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "VERIFY CODE error!<br><br>");
-                return newModelAndView("register", map);
+            // 1 verify code
+            if (verifyCode == null || !verifyCode.equalsIgnoreCase(formAccount.getVerifyCode())) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "VERIFY CODE error!<br><br>");
+
+                return newModelAndView("register", model);
             }
 
-            // username not contains special character - whitespace, <
-            if (accountDto.getUsername().contains(" ") || accountDto.getUsername().contains("<")) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "USERNAME shouldn't contains whitespace or '&lt;'!<br><br>");
-                return newModelAndView("register", map);
+            // 2 special character
+            if (formAccount.getUsername().contains(" ") || formAccount.getUsername().contains("<")) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "USERNAME shouldn't contains whitespace or '&lt;'!<br><br>");
+
+                return newModelAndView("register", model);
             }
 
-            // username not null and not empty with trim
-            if (StringUtils.isNullOrEmptyWithTrim(accountDto.getUsername())) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "USERNAME shouldn't be empty!");
-                return newModelAndView("register", map);
+            // 3 empty username
+            if (StringUtils.isNullOrEmptyWithTrim(formAccount.getUsername())) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "USERNAME shouldn't be empty!");
+
+                return newModelAndView("register", model);
             }
 
-            // username length between [1, 20]
-            if (accountDto.getUsername().length() > 20) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "USERNAME should be 1-20 long!");
-                return newModelAndView("register", map);
+            // 4 username length
+            if (formAccount.getUsername().length() > 20) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "USERNAME should be 1-20 long!");
+
+                return newModelAndView("register", model);
             }
 
-            // password not null and not empty with trim
-            if (StringUtils.isNullOrEmptyWithTrim(accountDto.getPassword())) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "PASSWORD shouldn't be empty");
-                return newModelAndView("register", map);
+            // 5 empty password
+            if (StringUtils.isNullOrEmptyWithTrim(formAccount.getPassword())) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "PASSWORD shouldn't be empty");
+
+                return newModelAndView("register", model);
             }
 
-            // username not registered
-            if (accountService.isUsernameRegistered(accountDto.getUsername())) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "USERNAME is already registered!<br><br>");
-                return newModelAndView("register");
+            // 6 username registered
+            if (accountService.isUsernameRegistered(formAccount.getUsername())) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "USERNAME is already registered!<br><br>");
+
+                return newModelAndView("register", model);
             }
 
-            accountService.addAccount(accountDto);
+            // valid
+            accountService.addAccount(formAccount);
+
             return newModelAndView("login");
         } catch (Exception e) {
             e.printStackTrace();
+
             return newModelAndView("error");
         }
     }

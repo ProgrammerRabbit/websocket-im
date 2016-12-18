@@ -22,12 +22,16 @@ public class IndexController extends BaseController {
     @RequestMapping("/index")
     public ModelAndView index(HttpSession session) {
         try {
-            AccountDto accountDto = (AccountDto) session.getAttribute("s_user");
-            Map<String, Object> map = MapUtils.newHashMap();
-            map.put("user", accountService.login(accountDto));
-            return newModelAndView("index", map);
+            Map<String, Object> model = MapUtils.newHashMap();
+
+            AccountDto loginAccount = getLoginAccountFromSession(session);
+            AccountDto fresherLoginAccount = accountService.login(loginAccount);
+            model.put("user", fresherLoginAccount);
+
+            return newModelAndView("index", model);
         } catch (Exception e) {
             e.printStackTrace();
+
             return newModelAndView("error");
         }
     }

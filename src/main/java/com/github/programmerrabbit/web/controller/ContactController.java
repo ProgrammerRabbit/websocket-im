@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by Rabbit on 2016/12/17.
  */
 @Controller
-public class ContactController {
+public class ContactController extends BaseController {
     @Resource
     private AccountService accountService;
 
@@ -32,36 +32,54 @@ public class ContactController {
     @ResponseBody
     public ResponseDto<Boolean> addContact(String username, HttpServletRequest request, HttpServletResponse response) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
-        try {
-            if (accountService.isUsernameRegistered(username)) {
-                AccountDto accountDto = (AccountDto) request.getSession().getAttribute("s_user");
-                AccountDto contactAccountDto = accountService.getSimpleAccountByUsername(username);
-                if (accountDto.getContacts().contains(contactAccountDto)) {
-                    responseDto.setContent(false);
-                    responseDto.setMessage("\"" + username + "\" is already your contact!");
-                } else if (accountDto.getId() == contactAccountDto.getId()) {
-                    responseDto.setContent(false);
-                    responseDto.setMessage("You can't add yourself as your contact!");
-                } else {
-                    responseDto.setContent(true);
-                    RequestDto requestDto = new RequestDto();
-                    requestDto.setRequestUserId(accountDto.getId());
-                    requestDto.setRequestUserName(accountDto.getUsername());
-                    requestDto.setAcceptUserId(contactAccountDto.getId());
-                    requestService.addRequest(requestDto);
 
-                    String destination = "/topic/request/" + requestDto.getAcceptUserId();
-                    simpMessagingTemplate.convertAndSend(destination, requestDto);
-                }
-            } else {
-                responseDto.setContent(false);
+        try {
+            AccountDto loginAccount = getLoginAccountFromSession(request.getSession());
+            AccountDto contact = accountService.getSimpleAccountByUsername(username);
+
+            // 1 username not registered
+            if (!accountService.isUsernameRegistered(username)) {
                 responseDto.setMessage("\"" + username + "\" is not exist!");
+                responseDto.setContent(false);
+
+            }
+            // 2 already contact
+            else if (loginAccount.getContacts().contains(contact)) {
+                responseDto.setMessage("\"" + username + "\" is already your contact!");
+                responseDto.setContent(false);
+            }
+            // 3 self
+            else if (loginAccount.getId() == contact.getId()) {
+                responseDto.setMessage("You can't add yourself as your contact!");
+                responseDto.setContent(false);
+            }
+            // valid
+            else {
+                RequestDto newRequest = buildRequest(loginAccount, contact);
+                requestService.persistRequest(newRequest);
+
+                String destination = "/topic/request/" + newRequest.getAcceptUserId();
+                simpMessagingTemplate.convertAndSend(destination, newRequest);
+
+                responseDto.setContent(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            responseDto.setCode(500);
+
             responseDto.setMessage("Sorry, some error occurred!");
+            responseDto.setCode(500);
         }
+
         return responseDto;
+    }
+
+    private RequestDto buildRequest(AccountDto loginAccount, AccountDto contact) {
+        RequestDto request = new RequestDto();
+
+        request.setRequestUserId(loginAccount.getId());
+        request.setRequestUserName(loginAccount.getUsername());
+        request.setAcceptUserId(contact.getId());
+
+        return request;
     }
 }

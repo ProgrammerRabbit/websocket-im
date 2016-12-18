@@ -15,9 +15,12 @@ import java.util.Map;
 public class LogoutController extends BaseController {
     @RequestMapping("/logout")
     public ModelAndView logout(HttpSession session) {
-        session.removeAttribute("s_user");
-        Map<String, Object> map = MapUtils.newHashMap();
-        map.put("errorHint", "Logout succeed!<br><br>");
-        return newModelAndView("login");
+        removeLoginAccountFromSession(session);
+
+        Map<String, Object> model = MapUtils.newHashMap();
+
+        model.put("errorHint", "Logout succeed!<br><br>");
+
+        return newModelAndView("login", model);
     }
 }

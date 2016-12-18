@@ -8,11 +8,11 @@ import java.util.List;
  * Created by Rabbit on 2016/12/17.
  */
 public interface RequestService {
-    List<RequestDto> getRequestsById(int id) throws Exception;
+    List<RequestDto> getRequestsByUserId(int userId) throws Exception;
 
     void rejectRequest(int requestId) throws Exception;
 
-    int acceptRequest(int requestId) throws Exception;
+    RequestDto acceptRequest(int requestId) throws Exception;
 
-    void addRequest(RequestDto requestDto) throws Exception;
+    void persistRequest(RequestDto requestDto) throws Exception;
 }

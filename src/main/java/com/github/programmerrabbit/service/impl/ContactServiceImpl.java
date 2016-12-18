@@ -31,29 +31,29 @@ public class ContactServiceImpl implements ContactService {
 
     private Cache<Integer, Set<AccountDto>> cache = new ConcurrentCache<Integer, Set<AccountDto>>(ExpireTypeEnum.EXPIRE_AFTER_WRITE, 5, TimeUnit.MINUTES);
 
-    public Set<AccountDto> getContacts(int id) throws Exception {
-        List<Contact> anotherContactList = contactDao.getByField("oneUserId", id);
-        List<Contact> oneContactList = contactDao.getByField("anotherUserId", id);
-        Set<AccountDto> contacts = CollectionUtils.newHashSet();
+    public Set<AccountDto> getContacts(int userId) throws Exception {
+        List<Contact> anotherContactList = contactDao.getByField("oneUserId", userId);
+        List<Contact> oneContactList = contactDao.getByField("anotherUserId", userId);
+        Set<AccountDto> contactSet = CollectionUtils.newHashSet();
         for (Contact anotherContact : anotherContactList) {
             AccountDto accountDto = accountService.getSimpleAccountById(anotherContact.getAnotherUserId());
             if (accountDto != null) {
-                contacts.add(accountDto);
+                contactSet.add(accountDto);
             }
         }
         for (Contact oneContact : oneContactList) {
             AccountDto accountDto = accountService.getSimpleAccountById(oneContact.getOneUserId());
             if (accountDto != null) {
-                contacts.add(accountDto);
+                contactSet.add(accountDto);
             }
         }
-        return contacts;
+        return contactSet;
     }
 
-    public Set<AccountDto> getContactsWithCache(final int id) throws Exception {
-        return cache.get(id, new Callable<Set<AccountDto>>() {
+    public Set<AccountDto> getContactsWithCache(final int userId) throws Exception {
+        return cache.get(userId, new Callable<Set<AccountDto>>() {
             public Set<AccountDto> call() throws Exception {
-                return getContacts(id);
+                return getContacts(userId);
             }
         });
     }
@@ -63,7 +63,9 @@ public class ContactServiceImpl implements ContactService {
         contactPair.setOneUserId(contactDto.getOneUserId());
         contactPair.setAnotherUserId(contactDto.getAnotherUserId());
         contactDao.insert(contactPair);
+
         contactDto.setId(contactPair.getId());
+
         cache.removeAll();
     }
 }

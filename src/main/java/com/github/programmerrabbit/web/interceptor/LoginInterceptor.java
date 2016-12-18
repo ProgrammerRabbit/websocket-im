@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        AccountDto accountDto = (AccountDto) request.getSession().getAttribute("s_user");
-        if (accountDto == null) {
+        AccountDto loginAccount = (AccountDto) request.getSession().getAttribute("s_user");
+        if (loginAccount == null) {
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("errorHint", "Login, Please!<br><br>");
             modelAndView.setViewName("login");

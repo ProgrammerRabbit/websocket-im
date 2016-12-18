@@ -30,24 +30,33 @@ public class LoginController extends BaseController {
     @RequestMapping(path = "/doLogin", method = RequestMethod.POST)
     public ModelAndView login(AccountDto accountDto, HttpSession session) {
         try {
-            String code = (String) session.getAttribute("s_code");
-            if (code == null || !code.equalsIgnoreCase(accountDto.getVerifyCode())) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "VERIFY CODE error!<br><br>");
-                return newModelAndView("login", map);
+            // 1 verifyCode
+            String verifyCode = getVerifyCodeFromSession(session);
+            if (verifyCode == null || !verifyCode.equalsIgnoreCase(accountDto.getVerifyCode())) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "VERIFY CODE error!<br><br>");
+
+                return newModelAndView("login", model);
             }
 
-            AccountDto dbAccountDto = accountService.login(accountDto);
-            if (dbAccountDto == null) {
-                Map<String, Object> map = MapUtils.newHashMap();
-                map.put("errorHint", "USERNAME or PASSWORD error!<br><br>");
-                return newModelAndView("login", map);
+            // 2 validate username and password
+            AccountDto dbAccount = accountService.login(accountDto);
+            if (dbAccount == null) {
+                Map<String, Object> model = MapUtils.newHashMap();
+
+                model.put("errorHint", "USERNAME or PASSWORD error!<br><br>");
+
+                return newModelAndView("login", model);
             }
 
-            session.setAttribute("s_user", dbAccountDto);
+            // valid
+            putLoginAccount2Session(session, dbAccount);
+
             return new ModelAndView(new RedirectView("/index"));
         } catch (Exception e) {
             e.printStackTrace();
+
             return newModelAndView("error");
         }
     }

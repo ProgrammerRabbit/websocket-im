@@ -29,7 +29,6 @@
     </mvc:view-resolvers>
 
     <mvc:resources mapping="/webjars/**" location="/webjars/"/>
-    <mvc:resources mapping="/wsdemo/**" location="/wsdemo/"/>
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
     <mvc:interceptors>

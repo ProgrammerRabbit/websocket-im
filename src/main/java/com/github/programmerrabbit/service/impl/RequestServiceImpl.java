@@ -6,7 +6,6 @@ import com.github.programmerrabbit.dto.ContactDto;
 import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.service.ContactService;
 import com.github.programmerrabbit.service.RequestService;
-import com.github.programmerrabbit.utils.BeanUtils;
 import com.github.programmerrabbit.utils.CollectionUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +23,11 @@ public class RequestServiceImpl implements RequestService {
     @Resource
     private ContactService contactService;
 
-    public List<RequestDto> getRequestsById(int id) throws Exception {
-        List<Request> requestList = requestDao.getByField("acceptUserId", String.valueOf(id));
+    public List<RequestDto> getRequestsByUserId(int userId) throws Exception {
+        List<Request> requestList = requestDao.getByField("acceptUserId", String.valueOf(userId));
         List<RequestDto> requestDtoList = CollectionUtils.newArrayList();
         for (Request request : requestList) {
-            RequestDto requestDto = new RequestDto();
-            BeanUtils.copyProperties(request, requestDto);
-            requestDtoList.add(requestDto);
+            requestDtoList.add(RequestDto.fromEntity(request));
         }
         return requestDtoList;
     }
@@ -39,22 +36,25 @@ public class RequestServiceImpl implements RequestService {
         requestDao.deleteById(requestId);
     }
 
-    public int acceptRequest(int requestId) throws Exception {
+    public RequestDto acceptRequest(int requestId) throws Exception {
+        // add contact pair
         Request request = requestDao.getById(requestId);
         ContactDto contactPair = new ContactDto();
         contactPair.setOneUserId(request.getRequestUserId());
         contactPair.setAnotherUserId(request.getAcceptUserId());
         contactService.addContactPair(contactPair);
 
+        // delete request
         requestDao.deleteById(requestId);
 
-        return request.getRequestUserId();
+        // return request info
+        return RequestDto.fromEntity(request);
     }
 
-    public void addRequest(RequestDto requestDto) throws Exception {
-        Request request = new Request();
-        BeanUtils.copyProperties(requestDto, request);
+    public void persistRequest(RequestDto requestDto) throws Exception {
+        Request request = requestDto.toEntity();
         requestDao.insert(request);
+
         requestDto.setId(request.getId());
     }
 }

@@ -13,13 +13,13 @@ import java.awt.image.BufferedImage;
  */
 @Controller
 @RequestMapping("/visit")
-public class VerifyCodeController {
+public class VerifyCodeController extends BaseController {
     @RequestMapping("/verifyCode")
     private void generateVerifyCode(HttpSession session, HttpServletResponse response) {
         try {
             VerifyCode verifyCode = new VerifyCode();
             BufferedImage image = verifyCode.getVerifyCodeImage();
-            session.setAttribute("s_code", verifyCode.getVerifyCodeText());
+            putVerifyCode2Session(session, verifyCode.getVerifyCodeText());
             verifyCode.writeOutputStream(image, response.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();

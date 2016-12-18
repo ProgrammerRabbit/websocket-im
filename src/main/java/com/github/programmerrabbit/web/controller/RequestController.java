@@ -1,16 +1,21 @@
 package com.github.programmerrabbit.web.controller;
 
 import com.github.programmerrabbit.dto.AccountDto;
+import com.github.programmerrabbit.dto.MessageDto;
 import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.dto.ResponseDto;
+import com.github.programmerrabbit.enums.MessageStatusEnum;
 import com.github.programmerrabbit.service.AccountService;
+import com.github.programmerrabbit.service.MessageService;
 import com.github.programmerrabbit.service.RequestService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,20 +29,29 @@ public class RequestController extends BaseController {
     @Resource
     private AccountService accountService;
 
+    @Resource
+    private MessageService messageService;
+
+    @Resource
+    private SimpMessagingTemplate messagingTemplate;
+
     @RequestMapping("/getRequests")
     @ResponseBody
     public ResponseDto<List<RequestDto>> getRequests(HttpSession session) {
         ResponseDto<List<RequestDto>> responseDto = new ResponseDto<List<RequestDto>>();
+
         try {
-            AccountDto accountDto = (AccountDto) session.getAttribute("s_user");
-            if (accountDto != null) {
-                List<RequestDto> requestDtoList = requestService.getRequestsById(accountDto.getId());
-                responseDto.setContent(requestDtoList);
+            AccountDto loginAccount = getLoginAccountFromSession(session);
+            if (loginAccount != null) {
+                List<RequestDto> requests = requestService.getRequestsByUserId(loginAccount.getId());
+                responseDto.setContent(requests);
             }
         } catch (Exception e) {
             e.printStackTrace();
+
             responseDto.setCode(500);
         }
+
         return responseDto;
     }
 
@@ -48,6 +62,7 @@ public class RequestController extends BaseController {
         try {
             if (isUserLegal(userId, session)) {
                 requestService.rejectRequest(requestId);
+
                 responseDto.setContent(true);
             } else {
                 responseDto.setContent(false);
@@ -65,13 +80,11 @@ public class RequestController extends BaseController {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
             if (isUserLegal(userId, session)) {
-                int requestUserId = requestService.acceptRequest(requestId);
-                responseDto.setContent(true);
+                RequestDto requestInfo = requestService.acceptRequest(requestId);
+                updateContacts(session, requestInfo.getRequestUserId());
+                sendAcceptMessage(requestInfo);
 
-                AccountDto contactAccountDto = accountService.getSimpleAccountById(requestUserId);
-                AccountDto accountDto = (AccountDto) session.getAttribute("s_user");
-                accountDto.getContacts().add(contactAccountDto);
-                session.setAttribute("s_user", accountDto);
+                responseDto.setContent(true);
             } else {
                 responseDto.setContent(false);
             }
@@ -80,5 +93,25 @@ public class RequestController extends BaseController {
             responseDto.setCode(500);
         }
         return responseDto;
+    }
+
+    private void updateContacts(HttpSession session, int requestUserId) throws Exception {
+        AccountDto newContact = accountService.getSimpleAccountById(requestUserId);
+        AccountDto loginAccount = (AccountDto) session.getAttribute("s_user");
+        loginAccount.getContacts().add(newContact);
+        session.setAttribute("s_user", loginAccount);
+    }
+
+    private void sendAcceptMessage(RequestDto requestInfo) {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setAddTime(new Date());
+        messageDto.setFromId(requestInfo.getAcceptUserId());
+        messageDto.setToId(requestInfo.getRequestUserId());
+        messageDto.setContent("I accept your request, let's chat.");
+        messageDto.setStatus(MessageStatusEnum.SENT.getCode());
+
+        messageService.persistMessage(messageDto);
+        String destination = "/topic/message/" + requestInfo.getRequestUserId();
+        messagingTemplate.convertAndSend(destination, messageDto);
     }
 }
