@@ -19,7 +19,7 @@ Hi, ${user.username}! |
 <table>
     <tr>
         <td valign="top">
-            CONTACTS(${user.contacts?size}):
+            CONTACTS:
             <div class="contacts">
                 <#list user.contacts as contact>
                 <div class="contact" id="${contact.id}" onclick="chooseContact(this.id);">${contact.username}</div>

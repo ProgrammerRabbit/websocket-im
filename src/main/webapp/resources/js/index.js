@@ -190,12 +190,35 @@ function listen() {
     });
 }
 
+function getOfflineMessageCount() {
+    var userIdHidden = document.getElementById("userId");
+    $.ajax({
+        url: "/getOfflineMessageCount?userId=" + userIdHidden.value,
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                var pairList = data.content;
+                for (var i = 0; i < pairList.length; i++) {
+                    var contact = document.getElementById(pairList[i].contactUserId);
+                    if (contact != null) {
+                        var count = pairList[i].count;
+                        if (count != 0) {
+                            contact.innerHTML = contact.innerHTML + " (" + count + ")";
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 window.onload = function () {
     var errorHint = document.getElementById("errorHint");
     if (errorHint.innerHTML != "") {
         errorHint.style.display = "block";
     }
 
+    getOfflineMessageCount();
     getRequests();
     listen();
 };

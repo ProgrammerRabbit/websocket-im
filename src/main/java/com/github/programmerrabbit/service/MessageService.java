@@ -11,7 +11,9 @@ import java.util.List;
 public interface MessageService {
     void persistMessage(MessageDto messageDto) throws Exception;
 
-    List<MessageDto> queryMessageByQueryDto(MessageQueryDto queryDto) throws Exception;
+    List<MessageDto> getMessagesByQueryDto(MessageQueryDto queryDto) throws Exception;
+
+    int getMessagesCountByQueryDto(MessageQueryDto queryDto) throws Exception;
 
     void sendWebSocketMessage(String destination, Object load) throws Exception;
 }

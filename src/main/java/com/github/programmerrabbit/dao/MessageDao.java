@@ -28,4 +28,6 @@ public interface MessageDao {
     void deleteById(@Param("id") int id);
 
     List<Message> getMessagesByQueryDto(@Param("query") MessageQueryDto queryDto);
+
+    int getMessagesCountByQueryDto(@Param("query") MessageQueryDto queryDto);
 }

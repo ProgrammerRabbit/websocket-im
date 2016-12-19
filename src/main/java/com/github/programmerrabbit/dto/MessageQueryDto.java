@@ -16,6 +16,8 @@ public class MessageQueryDto implements Serializable {
     private int fromId;
     private int toId;
     private int status;
+
+    private boolean bothSide; // make fromId and toId as a pair
+
     private int sortType;
-    private boolean bothSide;
 }

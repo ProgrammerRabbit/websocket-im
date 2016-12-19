@@ -30,13 +30,17 @@ public class MessageServiceImpl implements MessageService {
         messageDto.setId(message.getId());
     }
 
-    public List<MessageDto> queryMessageByQueryDto(MessageQueryDto queryDto) throws Exception {
+    public List<MessageDto> getMessagesByQueryDto(MessageQueryDto queryDto) throws Exception {
         List<Message> messages = messageDao.getMessagesByQueryDto(queryDto);
         List<MessageDto> messageDtos = CollectionUtils.newArrayList();
         for (Message message : messages) {
             messageDtos.add(MessageDto.fromEntity(message));
         }
         return messageDtos;
+    }
+
+    public int getMessagesCountByQueryDto(MessageQueryDto queryDto) throws Exception {
+        return messageDao.getMessagesCountByQueryDto(queryDto);
     }
 
     public void sendWebSocketMessage(String destination, Object load) throws Exception {
