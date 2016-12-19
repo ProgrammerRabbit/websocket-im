@@ -1,24 +1,29 @@
 package com.github.programmerrabbit.web.interceptor;
 
 import com.github.programmerrabbit.dto.AccountDto;
+import com.github.programmerrabbit.utils.MapUtils;
+import com.github.programmerrabbit.utils.ModelAndViewUtils;
+import com.github.programmerrabbit.utils.SessionUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.ModelAndViewDefiningException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * Created by Rabbit on 2016/12/15.
  */
 public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        AccountDto loginAccount = (AccountDto) request.getSession().getAttribute("s_user");
+        AccountDto loginAccount = SessionUtils.getLoginAccount(request.getSession());
         if (loginAccount == null) {
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.addObject("errorHint", "Login, Please!<br><br>");
-            modelAndView.setViewName("login");
-            throw new ModelAndViewDefiningException(modelAndView);
+            Map<String, Object> model = MapUtils.newHashMap();
+
+            model.put("errorHint", "Login, Please!<br><br>");
+
+            throw new ModelAndViewDefiningException(ModelAndViewUtils.newInstance("login", model));
         }
         return true;
     }

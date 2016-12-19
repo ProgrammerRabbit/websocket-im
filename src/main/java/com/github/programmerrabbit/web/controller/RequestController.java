@@ -8,7 +8,7 @@ import com.github.programmerrabbit.enums.MessageStatusEnum;
 import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.MessageService;
 import com.github.programmerrabbit.service.RequestService;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import com.github.programmerrabbit.utils.SessionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,7 +22,7 @@ import java.util.List;
  * Created by Rabbit on 2016/12/17.
  */
 @Controller
-public class RequestController extends BaseController {
+public class RequestController {
     @Resource
     private RequestService requestService;
 
@@ -32,16 +32,13 @@ public class RequestController extends BaseController {
     @Resource
     private MessageService messageService;
 
-    @Resource
-    private SimpMessagingTemplate messagingTemplate;
-
     @RequestMapping("/getRequests")
     @ResponseBody
     public ResponseDto<List<RequestDto>> getRequests(HttpSession session) {
         ResponseDto<List<RequestDto>> responseDto = new ResponseDto<List<RequestDto>>();
 
         try {
-            AccountDto loginAccount = getLoginAccountFromSession(session);
+            AccountDto loginAccount = SessionUtils.getLoginAccount(session);
             if (loginAccount != null) {
                 List<RequestDto> requests = requestService.getRequestsByUserId(loginAccount.getId());
                 responseDto.setContent(requests);
@@ -60,7 +57,7 @@ public class RequestController extends BaseController {
     public ResponseDto<Boolean> rejectRequest(int requestId, int userId, HttpSession session) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
-            if (isUserLegal(userId, session)) {
+            if (SessionUtils.isUserLegal(userId, session)) {
                 requestService.rejectRequest(requestId);
 
                 responseDto.setContent(true);
@@ -79,7 +76,7 @@ public class RequestController extends BaseController {
     public ResponseDto<Boolean> acceptRequest(int requestId, int userId, HttpSession session) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
-            if (isUserLegal(userId, session)) {
+            if (SessionUtils.isUserLegal(userId, session)) {
                 RequestDto requestInfo = requestService.acceptRequest(requestId);
                 updateContacts(session, requestInfo.getRequestUserId());
                 sendAcceptMessage(requestInfo);
@@ -112,6 +109,6 @@ public class RequestController extends BaseController {
 
         messageService.persistMessage(messageDto);
         String destination = "/topic/message/" + requestInfo.getRequestUserId();
-        messagingTemplate.convertAndSend(destination, messageDto);
+        messageService.sendWebSocketMessage(destination, messageDto);
     }
 }

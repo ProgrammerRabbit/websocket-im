@@ -4,6 +4,8 @@ import com.github.programmerrabbit.dto.AccountDto;
 import com.github.programmerrabbit.dto.ResponseDto;
 import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.utils.MapUtils;
+import com.github.programmerrabbit.utils.ModelAndViewUtils;
+import com.github.programmerrabbit.utils.SessionUtils;
 import com.github.programmerrabbit.utils.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,19 +22,19 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/visit")
-public class RegisterController extends BaseController {
+public class RegisterController {
     @Resource
     private AccountService accountService;
 
     @RequestMapping("/register")
     public ModelAndView register() {
-        return newModelAndView("register");
+        return ModelAndViewUtils.newInstance("register");
     }
 
     @RequestMapping(path = "/doRegister", method = RequestMethod.POST)
     public ModelAndView register(AccountDto formAccount, HttpSession session) {
         try {
-            String verifyCode = getVerifyCodeFromSession(session);
+            String verifyCode = SessionUtils.getVerifyCode(session);
 
             // 1 verify code
             if (verifyCode == null || !verifyCode.equalsIgnoreCase(formAccount.getVerifyCode())) {
@@ -40,7 +42,7 @@ public class RegisterController extends BaseController {
 
                 model.put("errorHint", "VERIFY CODE error!<br><br>");
 
-                return newModelAndView("register", model);
+                return ModelAndViewUtils.newInstance("register", model);
             }
 
             // 2 special character
@@ -49,7 +51,7 @@ public class RegisterController extends BaseController {
 
                 model.put("errorHint", "USERNAME shouldn't contains whitespace or '&lt;'!<br><br>");
 
-                return newModelAndView("register", model);
+                return ModelAndViewUtils.newInstance("register", model);
             }
 
             // 3 empty username
@@ -58,7 +60,7 @@ public class RegisterController extends BaseController {
 
                 model.put("errorHint", "USERNAME shouldn't be empty!");
 
-                return newModelAndView("register", model);
+                return ModelAndViewUtils.newInstance("register", model);
             }
 
             // 4 username length
@@ -67,7 +69,7 @@ public class RegisterController extends BaseController {
 
                 model.put("errorHint", "USERNAME should be 1-20 long!");
 
-                return newModelAndView("register", model);
+                return ModelAndViewUtils.newInstance("register", model);
             }
 
             // 5 empty password
@@ -76,7 +78,7 @@ public class RegisterController extends BaseController {
 
                 model.put("errorHint", "PASSWORD shouldn't be empty");
 
-                return newModelAndView("register", model);
+                return ModelAndViewUtils.newInstance("register", model);
             }
 
             // 6 username registered
@@ -85,17 +87,21 @@ public class RegisterController extends BaseController {
 
                 model.put("errorHint", "USERNAME is already registered!<br><br>");
 
-                return newModelAndView("register", model);
+                return ModelAndViewUtils.newInstance("register", model);
             }
 
             // valid
             accountService.addAccount(formAccount);
 
-            return newModelAndView("login");
+            Map<String, Object> model = MapUtils.newHashMap();
+
+            model.put("errorHint", "Register succeed, please login!");
+
+            return ModelAndViewUtils.newInstance("login", model);
         } catch (Exception e) {
             e.printStackTrace();
 
-            return newModelAndView("error");
+            return ModelAndViewUtils.newInstance("error");
         }
     }
 

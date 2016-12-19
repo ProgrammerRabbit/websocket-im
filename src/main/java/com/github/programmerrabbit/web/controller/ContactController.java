@@ -4,8 +4,9 @@ import com.github.programmerrabbit.dto.AccountDto;
 import com.github.programmerrabbit.dto.RequestDto;
 import com.github.programmerrabbit.dto.ResponseDto;
 import com.github.programmerrabbit.service.AccountService;
+import com.github.programmerrabbit.service.MessageService;
 import com.github.programmerrabbit.service.RequestService;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import com.github.programmerrabbit.utils.SessionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by Rabbit on 2016/12/17.
  */
 @Controller
-public class ContactController extends BaseController {
+public class ContactController {
     @Resource
     private AccountService accountService;
 
@@ -26,7 +27,7 @@ public class ContactController extends BaseController {
     private RequestService requestService;
 
     @Resource
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private MessageService messageService;
 
     @RequestMapping("/addContact")
     @ResponseBody
@@ -34,7 +35,7 @@ public class ContactController extends BaseController {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
 
         try {
-            AccountDto loginAccount = getLoginAccountFromSession(request.getSession());
+            AccountDto loginAccount = SessionUtils.getLoginAccount(request.getSession());
             AccountDto contact = accountService.getSimpleAccountByUsername(username);
 
             // 1 username not registered
@@ -59,7 +60,7 @@ public class ContactController extends BaseController {
                 requestService.persistRequest(newRequest);
 
                 String destination = "/topic/request/" + newRequest.getAcceptUserId();
-                simpMessagingTemplate.convertAndSend(destination, newRequest);
+                messageService.sendWebSocketMessage(destination, newRequest);
 
                 responseDto.setContent(true);
             }

@@ -7,4 +7,6 @@ import com.github.programmerrabbit.dto.MessageDto;
  */
 public interface MessageService {
     void persistMessage(MessageDto messageDto);
+
+    void sendWebSocketMessage(String destination, Object load);
 }

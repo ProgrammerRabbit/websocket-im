@@ -1,5 +1,6 @@
 package com.github.programmerrabbit.web.controller;
 
+import com.github.programmerrabbit.utils.SessionUtils;
 import com.github.programmerrabbit.verifycode.VerifyCode;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,13 +14,13 @@ import java.awt.image.BufferedImage;
  */
 @Controller
 @RequestMapping("/visit")
-public class VerifyCodeController extends BaseController {
+public class VerifyCodeController {
     @RequestMapping("/verifyCode")
     private void generateVerifyCode(HttpSession session, HttpServletResponse response) {
         try {
             VerifyCode verifyCode = new VerifyCode();
             BufferedImage image = verifyCode.getVerifyCodeImage();
-            putVerifyCode2Session(session, verifyCode.getVerifyCodeText());
+            SessionUtils.putVerifyCode(session, verifyCode.getVerifyCodeText());
             verifyCode.writeOutputStream(image, response.getOutputStream());
         } catch (Exception e) {
             e.printStackTrace();
