@@ -5,6 +5,7 @@ import com.github.programmerrabbit.dto.MessageQueryDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -30,4 +31,7 @@ public interface MessageDao {
     List<Message> getMessagesByQueryDto(@Param("query") MessageQueryDto queryDto);
 
     int getMessagesCountByQueryDto(@Param("query") MessageQueryDto queryDto);
+
+    @Update("UPDATE Message SET status = #{status} WHERE toId = #{toId} AND fromId = #{fromId}")
+    void updateChatMessagesStatus(@Param("toId") int toId, @Param("fromId") int fromId, @Param("status") int status);
 }

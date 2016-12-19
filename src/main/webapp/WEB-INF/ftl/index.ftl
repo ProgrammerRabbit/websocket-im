@@ -22,7 +22,7 @@ Hi, ${user.username}! |
             CONTACTS:
             <div class="contacts">
                 <#list user.contacts as contact>
-                <div class="contact" id="${contact.id}" onclick="chooseContact(this.id);">${contact.username}</div>
+                <div draft="" class="contact" id="${contact.id}" onclick="chooseContact(this.id);">${contact.username}</div>
                 </#list>
             </div>
         </td>

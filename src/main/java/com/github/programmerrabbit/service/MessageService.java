@@ -15,5 +15,7 @@ public interface MessageService {
 
     int getMessagesCountByQueryDto(MessageQueryDto queryDto) throws Exception;
 
+    void readOfflineMessage(int userId, int contactUserId) throws Exception;
+
     void sendWebSocketMessage(String destination, Object load) throws Exception;
 }

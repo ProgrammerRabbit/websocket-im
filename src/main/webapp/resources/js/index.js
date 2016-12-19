@@ -1,23 +1,25 @@
 var choseContactId = null;
 
 function send() {
-    var userIdHidden = document.getElementById("userId");
-    var historyTextarea = document.getElementById("historyTextarea");
-    var contentTextarea = document.getElementById("contentTextarea");
-    $.ajax({
-        url: "/sendMessage?fromId=" + userIdHidden.value + "&toId=" + choseContactId + "&content=" + contentTextarea.value,
-        dataType: "json",
-        success: function (data) {
-            if (data.code == 200 && data.content == true) {
-                var head = "[ME] " + new Date().toString().substring(0, 24);
-                historyTextarea.value = "\n" + historyTextarea.value + head + "\n" + contentTextarea.value + "\n";
-                historyTextarea.scrollTop = 99999;
-                contentTextarea.value = "";
-            } else {
-                alert("Send failed!");
+    if (choseContactId != null) {
+        var userIdHidden = document.getElementById("userId");
+        var historyTextarea = document.getElementById("historyTextarea");
+        var contentTextarea = document.getElementById("contentTextarea");
+        $.ajax({
+            url: "/sendMessage?fromId=" + userIdHidden.value + "&toId=" + choseContactId + "&content=" + contentTextarea.value,
+            dataType: "json",
+            success: function (data) {
+                if (data.code == 200 && data.content == true) {
+                    var head = "[ME] " + new Date().toString().substring(0, 24);
+                    historyTextarea.value = "\n" + historyTextarea.value + head + "\n" + contentTextarea.value + "\n";
+                    historyTextarea.scrollTop = 99999;
+                    contentTextarea.value = "";
+                } else {
+                    alert("Send failed!");
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 function addContact() {
@@ -43,15 +45,39 @@ function addContact() {
 }
 
 function chooseContact(newChoseContactId) {
+    var contentTextarea = document.getElementById("contentTextarea");
+
     if (choseContactId != null) {
         var choseContact = document.getElementById(choseContactId);
+        choseContact.draft = contentTextarea.value;
         choseContact.className = "contact";
     }
     var newChoseContact = document.getElementById(newChoseContactId);
     newChoseContact.className = "choseContact";
     choseContactId = newChoseContactId;
+    if (newChoseContact.draft == undefined) {
+        contentTextarea.value = "";
+    } else {
+        contentTextarea.value = newChoseContact.draft;
+    }
 
-    getHistoryMessages()
+    getHistoryMessages();
+}
+
+function readOfflineMessages() {
+    var userIdHidden = document.getElementById("userId");
+    $.ajax({
+        url: "/readOfflineMessages?userId=" + userIdHidden.value + "&contactUserId=" + choseContactId,
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200 && data.content == true) {
+                var contact = document.getElementById(choseContactId);
+                if (contact.innerHTML.lastIndexOf(' ') != -1) {
+                    contact.innerHTML = contact.innerHTML.substring(0, contact.innerHTML.lastIndexOf(" "));
+                }
+            }
+        }
+    });
 }
 
 function getHistoryMessages() {
@@ -76,6 +102,8 @@ function getHistoryMessages() {
                     innerHtml += "=== History Above ===\n\n";
                 }
                 historyTextarea.innerHTML = innerHtml;
+                historyTextarea.scrollTop = 99999;
+                readOfflineMessages();
             }
         }
     });

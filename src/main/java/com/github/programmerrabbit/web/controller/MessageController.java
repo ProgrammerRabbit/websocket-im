@@ -101,6 +101,24 @@ public class MessageController {
         return responseDto;
     }
 
+    @RequestMapping("/readOfflineMessages")
+    @ResponseBody
+    public ResponseDto<Boolean> readOfflineMessages(int userId, int contactUserId, HttpSession session) {
+        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
+        try {
+            if (SessionUtils.isUserLegal(userId, session)) {
+                messageService.readOfflineMessage(userId, contactUserId);
+
+                responseDto.setContent(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            responseDto.setCode(500);
+        }
+        return responseDto;
+    }
+
     @Data
     private class ContactOffMsgCntPair {
         private int contactUserId;

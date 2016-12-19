@@ -4,6 +4,7 @@ import com.github.programmerrabbit.dao.MessageDao;
 import com.github.programmerrabbit.dao.entity.Message;
 import com.github.programmerrabbit.dto.MessageDto;
 import com.github.programmerrabbit.dto.MessageQueryDto;
+import com.github.programmerrabbit.enums.MessageStatusEnum;
 import com.github.programmerrabbit.service.MessageService;
 import com.github.programmerrabbit.utils.CollectionUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -41,6 +42,10 @@ public class MessageServiceImpl implements MessageService {
 
     public int getMessagesCountByQueryDto(MessageQueryDto queryDto) throws Exception {
         return messageDao.getMessagesCountByQueryDto(queryDto);
+    }
+
+    public void readOfflineMessage(int userId, int contactUserId) throws Exception {
+        messageDao.updateChatMessagesStatus(userId, contactUserId, MessageStatusEnum.READ.getCode());
     }
 
     public void sendWebSocketMessage(String destination, Object load) throws Exception {
