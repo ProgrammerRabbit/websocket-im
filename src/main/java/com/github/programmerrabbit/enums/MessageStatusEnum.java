@@ -5,7 +5,8 @@ package com.github.programmerrabbit.enums;
  */
 public enum MessageStatusEnum {
     SENT(0),
-    READ(1);
+    READ(1),
+    ALL(2);
 
     private int code;
 

@@ -57,7 +57,9 @@
                 </if>
             </otherwise>
         </choose>
-        AND status = #{query.status}
+        <if test="query.status != 2">
+            AND status = #{query.status}
+        </if>
         <if test="query.addTimeFrom != null">
             AND addTime >= #{query.addTimeFrom}
         </if>

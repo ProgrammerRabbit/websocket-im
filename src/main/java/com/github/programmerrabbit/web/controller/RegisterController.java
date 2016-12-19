@@ -95,7 +95,7 @@ public class RegisterController {
 
             Map<String, Object> model = MapUtils.newHashMap();
 
-            model.put("errorHint", "Register succeed, please login!");
+            model.put("errorHint", "Register succeed, please login!<br><br>");
 
             return ModelAndViewUtils.newInstance("login", model);
         } catch (Exception e) {

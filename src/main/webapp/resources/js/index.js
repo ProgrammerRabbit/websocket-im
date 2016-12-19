@@ -1,10 +1,23 @@
+var choseContactId = null;
+
 function send() {
+    var userIdHidden = document.getElementById("userId");
     var historyTextarea = document.getElementById("historyTextarea");
     var contentTextarea = document.getElementById("contentTextarea");
-    var head = "[ME] " + new Date().toString().substring(0, 24);
-    historyTextarea.value = historyTextarea.value + head + "\n" + contentTextarea.value + "\n";
-    historyTextarea.scrollTop = 99999;
-    contentTextarea.value = "";
+    $.ajax({
+        url: "/sendMessage?fromId=" + userIdHidden.value + "&toId=" + choseContactId + "&content=" + contentTextarea.value,
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200 && data.content == true) {
+                var head = "[ME] " + new Date().toString().substring(0, 24);
+                historyTextarea.value = "\n" + historyTextarea.value + head + "\n" + contentTextarea.value + "\n";
+                historyTextarea.scrollTop = 99999;
+                contentTextarea.value = "";
+            } else {
+                alert("Send failed!");
+            }
+        }
+    });
 }
 
 function addContact() {
@@ -28,8 +41,6 @@ function addContact() {
         }
     });
 }
-
-var choseContactId = null;
 
 function chooseContact(newChoseContactId) {
     if (choseContactId != null) {
@@ -62,7 +73,7 @@ function getHistoryMessages() {
                     innerHtml = innerHtml + messageList[i].content + "\n\n";
                 }
                 if (innerHtml != "") {
-                    innerHtml += "=== History Above ===\n";
+                    innerHtml += "=== History Above ===\n\n";
                 }
                 historyTextarea.innerHTML = innerHtml;
             }
@@ -152,7 +163,7 @@ function getRequestLine(request) {
 
 var stompClient = null;
 
-function listenRequest() {
+function listen() {
     var userIdHidden = document.getElementById("userId");
     var requestBox = document.getElementById("requestBox");
     var requestBoxHint = document.getElementById("requestBoxHint");
@@ -186,7 +197,7 @@ window.onload = function () {
     }
 
     getRequests();
-    listenRequest();
+    listen();
 };
 
 window.onbeforeunload = function() {

@@ -14,10 +14,8 @@
 <h1>WebSocket IM</h1>
 <input id="userId" type="hidden" value="${user.id}"/>
 Hi, ${user.username}! |
-<a href="/logout">Logout</a><br><br>
-<button onclick="clickRequestBox();">RequestBox</button>
-&nbsp;<span id="requestBoxHint"></span><br><br>
-<div id="requestBox" open="false"></div><br>
+<a href="/logout">Logout</a>
+<hr>
 <table>
     <tr>
         <td valign="top">
@@ -32,6 +30,11 @@ Hi, ${user.username}! |
             <textarea id="historyTextarea" rows="15" cols="40" disabled="disabled"></textarea><br>
             <textarea id="contentTextarea" rows="3" cols="40"></textarea>
             <button onclick="send();">Send</button>
+        </td>
+        <td valign="top" rowspan="2">
+            <button onclick="clickRequestBox();">RequestBox</button>
+            &nbsp;<span id="requestBoxHint"></span><br><br>
+            <div id="requestBox" open="false"></div>
         </td>
     </tr>
     <tr>

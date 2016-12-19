@@ -24,10 +24,12 @@ public class IndexController {
     @RequestMapping("/index")
     public ModelAndView index(HttpSession session) {
         try {
-            Map<String, Object> model = MapUtils.newHashMap();
-
             AccountDto loginAccount = SessionUtils.getLoginAccount(session);
             AccountDto fresherLoginAccount = accountService.login(loginAccount);
+            SessionUtils.putLoginAccount(session, fresherLoginAccount);
+
+            Map<String, Object> model = MapUtils.newHashMap();
+
             model.put("user", fresherLoginAccount);
 
             return ModelAndViewUtils.newInstance("index", model);

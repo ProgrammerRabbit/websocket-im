@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,11 +42,34 @@ public class MessageController {
         return responseDto;
     }
 
+    @RequestMapping("/sendMessage")
+    @ResponseBody
+    public ResponseDto<Boolean> sendMessage(MessageDto message, HttpSession session) {
+        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
+        try {
+            if (SessionUtils.isUserLegal(message.getFromId(), session)) {
+                message.setAddTime(new Date());
+                message.setStatus(MessageStatusEnum.SENT.getCode());
+                messageService.persistMessage(message);
+
+                String destination = "/topic/message/" + message.getToId();
+                messageService.sendWebSocketMessage(destination, message);
+
+                responseDto.setContent(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            responseDto.setCode(200);
+        }
+        return responseDto;
+    }
+
     private MessageQueryDto buildMessageQueryDto(int userId, int contactUserId) {
         MessageQueryDto queryDto = new MessageQueryDto();
         queryDto.setFromId(contactUserId);
         queryDto.setToId(userId);
-        queryDto.setStatus(MessageStatusEnum.SENT.getCode());
+        queryDto.setStatus(MessageStatusEnum.ALL.getCode());
         queryDto.setSortType(SortTypeEnum.ASC.getCode());
         queryDto.setBothSide(true);
         return queryDto;
