@@ -57,4 +57,9 @@ public class RequestServiceImpl implements RequestService {
 
         requestDto.setId(request.getId());
     }
+
+    public boolean isRequestExist(int requestUserId, int acceptUserId) throws Exception {
+        List<Request> requests = requestDao.getRequestByRequestAndAcceptUserId(requestUserId, acceptUserId);
+        return requests.size() != 0;
+    }
 }

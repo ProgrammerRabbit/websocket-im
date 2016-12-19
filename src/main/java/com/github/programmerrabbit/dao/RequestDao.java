@@ -25,4 +25,7 @@ public interface RequestDao {
 
     @Delete("DELETE FROM Request WHERE id = #{id}")
     void deleteById(@Param("id") int id);
+
+    @Select("SELECT * FROM Request WHERE acceptUserId = #{acceptUserId} AND requestUserId = #{requestUserId}")
+    List<Request> getRequestByRequestAndAcceptUserId(@Param("requestUserId") int requestUserId, @Param("acceptUserId") int acceptUserId);
 }

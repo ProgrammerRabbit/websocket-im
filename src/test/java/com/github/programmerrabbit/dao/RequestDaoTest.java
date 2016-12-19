@@ -52,4 +52,8 @@ public class RequestDaoTest extends BaseTest {
         dao.deleteById(ID);
     }
 
+    @Test
+    public void testGetRequest() throws Exception {
+        System.out.println(dao.getRequestByRequestAndAcceptUserId(1, 2));
+    }
 }

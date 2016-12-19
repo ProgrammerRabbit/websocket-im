@@ -1,6 +1,7 @@
 package com.github.programmerrabbit.dao;
 
 import com.github.programmerrabbit.dao.entity.Message;
+import com.github.programmerrabbit.dto.MessageQueryDto;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -25,4 +26,6 @@ public interface MessageDao {
 
     @Delete("DELETE FROM Message WHERE id = #{id}")
     void deleteById(@Param("id") int id);
+
+    List<Message> getMessagesByQueryDto(@Param("query") MessageQueryDto queryDto);
 }

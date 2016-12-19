@@ -20,3 +20,28 @@ a:hover {
     color: white;
     background-color: grey;
 }
+
+.contacts {
+    overflow: auto;
+    height: 220px;
+    border: 1px solid black;
+    font-size: 16px;
+}
+
+.contact {
+    margin: 5px;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: 1px solid grey;
+}
+
+.choseContact {
+    margin: 5px;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border: 1px solid grey;
+    color: white;
+    background-color: grey;
+}

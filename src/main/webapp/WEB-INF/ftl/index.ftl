@@ -18,16 +18,31 @@ Hi, ${user.username}! |
 <button onclick="clickRequestBox();">RequestBox</button>
 &nbsp;<span id="requestBoxHint"></span><br><br>
 <div id="requestBox" open="false"></div><br>
-CONTACTS:<br>
-<#list user.contacts as contact>
-    ${contact.username}<br>
-</#list><br>
-<input id="contact" type="text"/>
-<button onclick="addContact();">ADD CONTACT</button>
-<div id="errorHint"></div><br><br>
-<textarea id="historyTextarea" rows="15" cols="40" disabled="disabled"></textarea><br>
-<textarea id="contentTextarea" rows="3" cols="40"></textarea>
-<button onclick="send();">Send</button><br><br>
+<table>
+    <tr>
+        <td valign="top">
+            CONTACTS(${user.contacts?size}):
+            <div class="contacts">
+                <#list user.contacts as contact>
+                <div class="contact" id="${contact.id}" onclick="chooseContact(this.id);">${contact.username}</div>
+                </#list>
+            </div>
+        </td>
+        <td rowspan="2">
+            <textarea id="historyTextarea" rows="15" cols="40" disabled="disabled"></textarea><br>
+            <textarea id="contentTextarea" rows="3" cols="40"></textarea>
+            <button onclick="send();">Send</button>
+        </td>
+    </tr>
+    <tr>
+       <td valign="bottom">
+           <div id="errorHint"></div>
+           <input id="contact" type="text"/>
+           <button onclick="addContact();">ADD CONTACT</button>
+       </td>
+    </tr>
+</table>
+<br><br>
 &copy;2016 <a href="http://yangwen.net.cn">ProgrammerRabbit</a>
 </body>
 </html>

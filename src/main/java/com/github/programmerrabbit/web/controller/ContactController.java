@@ -56,12 +56,13 @@ public class ContactController {
             }
             // valid
             else {
-                RequestDto newRequest = buildRequest(loginAccount, contact);
-                requestService.persistRequest(newRequest);
+                if (!requestService.isRequestExist(loginAccount.getId(), contact.getId())) {
+                    RequestDto newRequest = buildRequest(loginAccount, contact);
+                    requestService.persistRequest(newRequest);
 
-                String destination = "/topic/request/" + newRequest.getAcceptUserId();
-                messageService.sendWebSocketMessage(destination, newRequest);
-
+                    String destination = "/topic/request/" + newRequest.getAcceptUserId();
+                    messageService.sendWebSocketMessage(destination, newRequest);
+                }
                 responseDto.setContent(true);
             }
         } catch (Exception e) {

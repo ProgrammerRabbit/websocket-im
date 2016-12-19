@@ -99,7 +99,7 @@ public class RequestController {
         session.setAttribute("s_user", loginAccount);
     }
 
-    private void sendAcceptMessage(RequestDto requestInfo) {
+    private void sendAcceptMessage(RequestDto requestInfo) throws Exception {
         MessageDto messageDto = new MessageDto();
         messageDto.setAddTime(new Date());
         messageDto.setFromId(requestInfo.getAcceptUserId());

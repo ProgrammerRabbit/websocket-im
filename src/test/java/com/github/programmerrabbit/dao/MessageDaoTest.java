@@ -2,6 +2,9 @@ package com.github.programmerrabbit.dao;
 
 import com.github.programmerrabbit.BaseTest;
 import com.github.programmerrabbit.dao.entity.Message;
+import com.github.programmerrabbit.dto.MessageQueryDto;
+import com.github.programmerrabbit.enums.MessageStatusEnum;
+import com.github.programmerrabbit.enums.SortTypeEnum;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -57,4 +60,17 @@ public class MessageDaoTest extends BaseTest {
         dao.deleteById(ID);
     }
 
+    @Test
+    public void testGetMessagesByQueryDto() {
+        MessageQueryDto messageQueryDto = new MessageQueryDto();
+        messageQueryDto.setFromId(26);
+        messageQueryDto.setToId(35);
+        messageQueryDto.setStatus(MessageStatusEnum.SENT.getCode());
+        messageQueryDto.setSortType(SortTypeEnum.ASC.getCode());
+        messageQueryDto.setBothSide(true);
+        List<Message> messages = dao.getMessagesByQueryDto(messageQueryDto);
+        for (Message message : messages) {
+            System.out.println(message);
+        }
+    }
 }

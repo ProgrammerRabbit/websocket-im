@@ -29,6 +29,47 @@ function addContact() {
     });
 }
 
+var choseContactId = null;
+
+function chooseContact(newChoseContactId) {
+    if (choseContactId != null) {
+        var choseContact = document.getElementById(choseContactId);
+        choseContact.className = "contact";
+    }
+    var newChoseContact = document.getElementById(newChoseContactId);
+    newChoseContact.className = "choseContact";
+    choseContactId = newChoseContactId;
+
+    getHistoryMessages()
+}
+
+function getHistoryMessages() {
+    var userIdHidden = document.getElementById("userId");
+    var historyTextarea = document.getElementById("historyTextarea");
+    $.ajax({
+        url: "/getHistoryMessages?userId=" + userIdHidden.value + "&contactUserId=" + choseContactId,
+        dataType: "json",
+        success: function (data) {
+            if (data.code == 200) {
+                var innerHtml = "";
+                var messageList = data.content;
+                for (var i = 0; i < messageList.length; i++) {
+                    if (messageList[i].fromId == userIdHidden.value) {
+                        innerHtml += "[ME] ";
+                    }
+                    var time = new Date(messageList[i].addTime).toString().substring(0, 24);
+                    innerHtml = innerHtml + time + "\n";
+                    innerHtml = innerHtml + messageList[i].content + "\n\n";
+                }
+                if (innerHtml != "") {
+                    innerHtml += "=== History Above ===\n";
+                }
+                historyTextarea.innerHTML = innerHtml;
+            }
+        }
+    });
+}
+
 function clickRequestBox() {
     var requestBoxHint = document.getElementById("requestBoxHint");
     var requestBox = document.getElementById("requestBox");
@@ -119,6 +160,7 @@ function listenRequest() {
     stompClient = Stomp.over(sockJS);
     stompClient.connect({}, function (frame) {
         console.log("Connected: " + frame);
+
         stompClient.subscribe("/topic/request/" + userIdHidden.value, function (request) {
             var data = JSON.parse(request.body);
             if (requestBox.innerHTML == "There is no request.") {
@@ -128,8 +170,13 @@ function listenRequest() {
             }
             requestBoxHint.style.color = "red";
             requestBoxHint.innerHTML = "New request";
-        })
-    })
+        });
+
+        stompClient.subscribe("/topic/message/" + userIdHidden.value, function (message) {
+           var data = JSON.parse(message.body);
+           location.reload();
+        });
+    });
 }
 
 window.onload = function () {
@@ -140,4 +187,10 @@ window.onload = function () {
 
     getRequests();
     listenRequest();
+};
+
+window.onbeforeunload = function() {
+    if (stompClient != null) {
+        stompClient.disconnect();
+    }
 };

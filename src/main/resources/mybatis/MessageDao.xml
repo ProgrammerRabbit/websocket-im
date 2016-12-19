@@ -35,4 +35,43 @@
         WHERE
         id = #{id}
     </update>
+
+    <select id="getMessagesByQueryDto" resultType="com.github.programmerrabbit.dao.entity.Message">
+        SELECT *
+        FROM Message
+        WHERE
+        1 = 1
+        <choose>
+            <when test="query.bothSide == true and query.toId !=0 and query.fromId !=0">
+                AND
+                (toId = #{query.toId} AND fromId = #{query.fromId})
+                OR
+                (fromId = #{query.toId} AND toId = #{query.fromId})
+            </when>
+            <otherwise>
+                <if test="query.toId != 0">
+                    AND toId = #{query.toId}
+                </if>
+                <if test="query.fromId != 0">
+                    AND fromId = #{query.fromId}
+                </if>
+            </otherwise>
+        </choose>
+        AND status = #{query.status}
+        <if test="query.addTimeFrom != null">
+            AND addTime >= #{query.addTimeFrom}
+        </if>
+        <if test="query.addTimeTo != null">
+            AND addTime &lt; #{query.addTimeTo}
+        </if>
+        <choose>
+          <when test="query.sortType == 0">
+              ORDER BY addTime ASC
+          </when>
+          <when test="query.sortType == 1">
+              ORDER BY addTime DESC
+          </when>
+        </choose>
+    </select>
+
 </mapper>
