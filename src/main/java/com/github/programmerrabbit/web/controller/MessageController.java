@@ -6,6 +6,7 @@ import com.github.programmerrabbit.dto.MessageQueryDto;
 import com.github.programmerrabbit.dto.ResponseDto;
 import com.github.programmerrabbit.enums.MessageStatusEnum;
 import com.github.programmerrabbit.enums.SortTypeEnum;
+import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.ContactService;
 import com.github.programmerrabbit.service.MessageService;
 import com.github.programmerrabbit.utils.CollectionUtils;
@@ -28,6 +29,9 @@ import java.util.Set;
 public class MessageController {
     @Resource
     private MessageService messageService;
+
+    @Resource
+    private AccountService accountService;
 
     @Resource
     private ContactService contactService;
@@ -55,16 +59,18 @@ public class MessageController {
     public ResponseDto<Boolean> sendMessage(MessageDto message, HttpSession session) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
-            String destination = "/topic/message/" + message.getToId();
-
             AccountDto loginAccount = SessionUtils.getLoginAccount(session);
-            message.setFromId(loginAccount.getId());
-            message.setAddTime(new Date());
-            message.setStatus(MessageStatusEnum.SENT.getCode());
+            AccountDto contactAccount = accountService.getSimpleAccountById(message.getToId());
+            if (loginAccount.getContacts().contains(contactAccount)) {
+                String destination = "/topic/message/" + message.getToId();
+                message.setFromId(loginAccount.getId());
+                message.setAddTime(new Date());
+                message.setStatus(MessageStatusEnum.SENT.getCode());
 
-            messageService.persistMessageAndSend(destination, message);
+                messageService.persistMessageAndSend(destination, message);
 
-            responseDto.setContent(true);
+                responseDto.setContent(true);
+            }
         } catch (Exception e) {
             e.printStackTrace();
 

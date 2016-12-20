@@ -39,10 +39,8 @@ public class RequestController {
 
         try {
             AccountDto loginAccount = SessionUtils.getLoginAccount(session);
-            if (loginAccount != null) {
-                List<RequestDto> requests = requestService.getRequestsByUserId(loginAccount.getId());
-                responseDto.setContent(requests);
-            }
+            List<RequestDto> requests = requestService.getRequestsByUserId(loginAccount.getId());
+            responseDto.setContent(requests);
         } catch (Exception e) {
             e.printStackTrace();
 
