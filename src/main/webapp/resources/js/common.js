@@ -4,7 +4,7 @@ function changeVerifyCode() {
 }
 
 function showErrorHint(text) {
-    var errorHint = document.getElementById("addContactHint");
+    var errorHint = document.getElementById("errorHint");
     errorHint.innerHTML = text;
     errorHint.style.display = "block";
 }

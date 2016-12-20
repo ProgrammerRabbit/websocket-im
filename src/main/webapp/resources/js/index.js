@@ -58,14 +58,8 @@ function getRequests() {
                 }
                 if (innerHtml == "") {
                     requests.innerHTML = "There is no request.";
-                    requests.style.textAlign = "center";
-                    requests.style.position = "absolute";
-                    requests.style.top = "30%";
                 } else {
                     requests.innerHTML = innerHtml;
-                    requests.style.textAlign = "left";
-                    requests.style.position = "ralative";
-                    requests.style.top = "0px";
                 }
             }
         }
@@ -107,6 +101,8 @@ function listenWebSocketMessage() {
                         messageCount.innerHTML = " (" + (parseInt(count) + 1) + ")";
                     }
                 } else {
+                    updateSession();
+
                     contacts.innerHTML += "<div draft='' class='contact' id='" + message.fromId + "' onclick='chooseContact(this.id);'></div>";
                     var contact = document.getElementById(message.fromId);
                     contact.innerHTML = message.fromUserName + "<span class='messageCount' id='messageCount" + message.fromId + "'> (1)</span>"
@@ -117,9 +113,10 @@ function listenWebSocketMessage() {
 }
 
 function buildRequestLine(request) {
-    return "<a onclick='acceptRequest(" + request.id + ");'>ACCEPT</a>&nbsp;|&nbsp;"
+    return "<div id='request" + request.id + "'>"
+        + "<a onclick='acceptRequest(" + request.id + ");'>ACCEPT</a>&nbsp;|&nbsp;"
         + "<a onclick='rejectRequest(" + request.id + ");'>REJECT</a>&nbsp;"
-        + request.requestUserName + "<br>";
+        + request.requestUserName + "<br></div>";
 }
 
 function chooseContact(newChoseContactId) {
@@ -229,7 +226,7 @@ function addContact() {
                 addContactHint.innerHTML = "";
                 alert("Request sent succeed!");
             } else {
-                addContactHint.innerHTML = data.message();
+                addContactHint.innerHTML = data.message;
             }
             addContactInput.value = "";
         }
@@ -237,13 +234,23 @@ function addContact() {
 }
 
 function acceptRequest(requestId) {
+    var request = document.getElementById("request" + requestId);
+    var contacts = document.getElementById("contacts");
+
     $.ajax({
         url: "/acceptRequest?requestId=" + requestId,
         dataType: "json",
         success: function (data) {
-            if (data.code == 200 && data.content == true) {
+            if (data.code == 200 && data.content != null) {
                 alert("Accept succeed!");
-                location.reload();
+
+                updateSession();
+
+                contacts.innerHTML += "<div draft='' class='contact' id='" + data.content.requestUserId + "' onclick='chooseContact(this.id);'></div>";
+                var contact = document.getElementById(data.content.requestUserId);
+                contact.innerHTML = data.content.requestUserName + "<span class='messageCount' id='messageCount" + data.content.requestUserId + "'></span>"
+
+                request.style.display = "none";
             } else {
                 alert("Accept failed!");
             }
@@ -252,16 +259,25 @@ function acceptRequest(requestId) {
 }
 
 function rejectRequest(requestId) {
+    var request = document.getElementById("request" + requestId);
+
     $.ajax({
         url: "/rejectRequest?requestId=" + requestId,
         dataType: "json",
         success: function (data) {
             if (data.code == 200 && data.content == true) {
                 alert("Reject succeed!");
-                location.reload();
+
+                request.style.display = "none";
             } else {
                 alert("Reject failed!");
             }
         }
+    });
+}
+
+function updateSession() {
+    $.ajax({
+        url: "/updateSession"
     });
 }

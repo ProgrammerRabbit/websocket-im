@@ -54,19 +54,15 @@ public class RequestController {
 
     @RequestMapping("/acceptRequest")
     @ResponseBody
-    public ResponseDto<Boolean> acceptRequest(int requestId, HttpSession session) {
-        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
+    public ResponseDto<RequestDto> acceptRequest(int requestId, HttpSession session) {
+        ResponseDto<RequestDto> responseDto = new ResponseDto<RequestDto>();
         try {
             if (isUserIllegal(requestId, session)) {
                 RequestDto requestInfo = requestService.acceptRequest(requestId);
 
-                updateContacts(session, requestInfo.getRequestUserId());
-
                 sendAcceptMessage(requestInfo);
 
-                responseDto.setContent(true);
-            } else {
-                responseDto.setContent(false);
+                responseDto.setContent(requestInfo);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,13 +94,6 @@ public class RequestController {
         RequestDto request = requestService.getRequestById(requestId);
         AccountDto loginAccount = SessionUtils.getLoginAccount(session);
         return request != null && request.getAcceptUserId() == loginAccount.getId();
-    }
-
-    private void updateContacts(HttpSession session, int requestUserId) throws Exception {
-        AccountDto newContact = accountService.getSimpleAccountById(requestUserId);
-        AccountDto loginAccount = (AccountDto) session.getAttribute("s_user");
-        loginAccount.getContacts().add(newContact);
-        session.setAttribute("s_user", loginAccount);
     }
 
     private void sendAcceptMessage(RequestDto requestInfo) throws Exception {

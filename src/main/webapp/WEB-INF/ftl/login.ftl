@@ -19,7 +19,7 @@
     (click to change.)<br>
     <img id="verifyCode" src="/visit/verifyCode" onclick="changeVerifyCode();"/><br>
     <input type="text" name="verifyCode"/><br><br>
-    <div id="addContactHint">${errorHint}</div>
+    <div id="errorHint">${errorHint}</div>
     <button onclick="doSubmit();">Login</button>
     Don't have an account? <a href="/visit/register">Register >></a><br><br>
 </form>
