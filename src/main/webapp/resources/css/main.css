@@ -1,20 +1,3 @@
-.error {
-    color: red;
-}
-
-#errorHint {
-    color: red;
-    display: none;
-}
-
-#requestBox {
-    overflow: auto;
-    display: none;
-    height: 269px;
-    width: 300px;
-    border: 1px solid black;
-}
-
 a {
     color: blue;
     text-decoration: none;
@@ -25,7 +8,16 @@ a:hover {
     background-color: grey;
 }
 
-.contacts {
+.error {
+    color: red;
+}
+
+#errorHint {
+    color: red;
+    display: none;
+}
+
+#contacts {
     overflow: auto;
     height: 240px;
     border: 1px solid grey;
@@ -40,7 +32,7 @@ a:hover {
     border: 1px solid grey;
 }
 
-.choseContact {
+.chosenContact {
     margin: 5px;
     padding-left: 10px;
     padding-top: 5px;
@@ -52,4 +44,14 @@ a:hover {
 
 .messageCount {
     color: red;
+}
+
+.sendHint {
+    width: 340px;
+}
+
+#requests {
+    overflow: auto;
+    height: 290px;
+    width: 340px;
 }

@@ -17,4 +17,6 @@ public interface RequestService {
     void persistRequest(RequestDto requestDto) throws Exception;
 
     boolean isRequestExist(int requestUserId, int acceptUserId) throws Exception;
+
+    RequestDto getRequestById(int id) throws Exception;
 }

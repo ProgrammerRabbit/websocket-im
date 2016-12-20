@@ -64,10 +64,10 @@ public class RegisterController {
             }
 
             // 4 username length
-            if (formAccount.getUsername().length() > 20) {
+            if (formAccount.getUsername().length() > 12) {
                 Map<String, Object> model = MapUtils.newHashMap();
 
-                model.put("errorHint", "USERNAME should be 1-20 long!");
+                model.put("errorHint", "USERNAME should be 1-12 long!");
 
                 return ModelAndViewUtils.newInstance("register", model);
             }

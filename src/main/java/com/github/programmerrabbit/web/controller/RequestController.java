@@ -52,12 +52,35 @@ public class RequestController {
         return responseDto;
     }
 
-    @RequestMapping("/rejectRequest")
+    @RequestMapping("/acceptRequest")
     @ResponseBody
-    public ResponseDto<Boolean> rejectRequest(int requestId, int userId, HttpSession session) {
+    public ResponseDto<Boolean> acceptRequest(int requestId, HttpSession session) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
-            if (SessionUtils.isUserLegal(userId, session)) {
+            if (isUserIllegal(requestId, session)) {
+                RequestDto requestInfo = requestService.acceptRequest(requestId);
+
+                updateContacts(session, requestInfo.getRequestUserId());
+
+                sendAcceptMessage(requestInfo);
+
+                responseDto.setContent(true);
+            } else {
+                responseDto.setContent(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseDto.setCode(500);
+        }
+        return responseDto;
+    }
+
+    @RequestMapping("/rejectRequest")
+    @ResponseBody
+    public ResponseDto<Boolean> rejectRequest(int requestId, HttpSession session) {
+        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
+        try {
+            if (isUserIllegal(requestId, session)) {
                 requestService.rejectRequest(requestId);
 
                 responseDto.setContent(true);
@@ -71,25 +94,10 @@ public class RequestController {
         return responseDto;
     }
 
-    @RequestMapping("/acceptRequest")
-    @ResponseBody
-    public ResponseDto<Boolean> acceptRequest(int requestId, int userId, HttpSession session) {
-        ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
-        try {
-            if (SessionUtils.isUserLegal(userId, session)) {
-                RequestDto requestInfo = requestService.acceptRequest(requestId);
-                updateContacts(session, requestInfo.getRequestUserId());
-                sendAcceptMessage(requestInfo);
-
-                responseDto.setContent(true);
-            } else {
-                responseDto.setContent(false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            responseDto.setCode(500);
-        }
-        return responseDto;
+    private boolean isUserIllegal(int requestId, HttpSession session) throws Exception {
+        RequestDto request = requestService.getRequestById(requestId);
+        AccountDto loginAccount = SessionUtils.getLoginAccount(session);
+        return request != null && request.getAcceptUserId() == loginAccount.getId();
     }
 
     private void updateContacts(HttpSession session, int requestUserId) throws Exception {

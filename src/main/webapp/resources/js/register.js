@@ -25,11 +25,11 @@ function isUsernameValid() {
         username.value = "";
         return false;
     }
-    if (username.value.length > 20) {
-        showErrorHint("USERNAME should be 1-20 long!<br><br>");
+    if (username.value.length > 12) {
+        showErrorHint("USERNAME should be 1-12 long!<br><br>");
         return false;
     }
-    var errorHint = document.getElementById("errorHint");
+    var errorHint = document.getElementById("addContactHint");
     errorHint.innerHTML = "";
     errorHint.style.display = "none";
     return true;
@@ -43,7 +43,7 @@ function doSubmit() {
     var form = document.getElementById("form");
     var password = document.getElementById("password");
     var confirm = document.getElementById("confirm");
-    var errorHint = document.getElementById("errorHint");
+    var errorHint = document.getElementById("addContactHint");
 
     if (password.value.trim() == "") {
         showErrorHint("PASSWORD shouldn't be empty!<br><br>");
@@ -62,7 +62,7 @@ function doSubmit() {
 }
 
 window.onload = function () {
-    var errorHint = document.getElementById("errorHint");
+    var errorHint = document.getElementById("addContactHint");
     if (errorHint.innerHTML != "") {
         errorHint.style.display = "block";
     }

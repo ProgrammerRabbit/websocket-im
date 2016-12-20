@@ -30,9 +30,4 @@ public class SessionUtils {
     public static String getVerifyCode(HttpSession session) {
         return (String) session.getAttribute(SESSION_ATTR_VERIFY_CODE);
     }
-
-    public static boolean isUserLegal(int userId, HttpSession session) {
-        AccountDto accountDto = getLoginAccount(session);
-        return accountDto.getId() == userId;
-    }
 }

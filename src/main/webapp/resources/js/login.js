@@ -7,7 +7,7 @@ function doSubmit() {
 }
 
 window.onload = function () {
-    var errorHint = document.getElementById("errorHint");
+    var errorHint = document.getElementById("addContactHint");
     if (errorHint.innerHTML != "") {
         errorHint.style.display = "block";
     }

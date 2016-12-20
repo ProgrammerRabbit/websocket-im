@@ -62,4 +62,9 @@ public class RequestServiceImpl implements RequestService {
         List<Request> requests = requestDao.getRequestByRequestAndAcceptUserId(requestUserId, acceptUserId);
         return requests.size() != 0;
     }
+
+    public RequestDto getRequestById(int id) throws Exception {
+        Request request = requestDao.getById(id);
+        return RequestDto.fromEntity(request);
+    }
 }

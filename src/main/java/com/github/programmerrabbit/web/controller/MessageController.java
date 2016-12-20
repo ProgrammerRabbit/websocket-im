@@ -34,14 +34,14 @@ public class MessageController {
 
     @RequestMapping("/getHistoryMessages")
     @ResponseBody
-    public ResponseDto<List<MessageDto>> getHistoryMessages(int userId, int contactUserId, HttpSession session) {
+    public ResponseDto<List<MessageDto>> getHistoryMessages(int contactUserId, HttpSession session) {
         ResponseDto<List<MessageDto>> responseDto = new ResponseDto<List<MessageDto>>();
         try {
-            if (SessionUtils.isUserLegal(userId, session)) {
-                MessageQueryDto queryDto = buildHistoryMessageQueryDto(userId, contactUserId);
-                List<MessageDto> messages = messageService.getMessagesByQueryDto(queryDto);
-                responseDto.setContent(messages);
-            }
+            AccountDto loginAccount = SessionUtils.getLoginAccount(session);
+
+            MessageQueryDto queryDto = buildHistoryMessageQueryDto(loginAccount.getId(), contactUserId);
+            List<MessageDto> messages = messageService.getMessagesByQueryDto(queryDto);
+            responseDto.setContent(messages);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -55,16 +55,16 @@ public class MessageController {
     public ResponseDto<Boolean> sendMessage(MessageDto message, HttpSession session) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
-            if (SessionUtils.isUserLegal(message.getFromId(), session)) {
-                String destination = "/topic/message/" + message.getToId();
+            String destination = "/topic/message/" + message.getToId();
 
-                message.setAddTime(new Date());
-                message.setStatus(MessageStatusEnum.SENT.getCode());
+            AccountDto loginAccount = SessionUtils.getLoginAccount(session);
+            message.setFromId(loginAccount.getId());
+            message.setAddTime(new Date());
+            message.setStatus(MessageStatusEnum.SENT.getCode());
 
-                messageService.persistMessageAndSend(destination, message);
+            messageService.persistMessageAndSend(destination, message);
 
-                responseDto.setContent(true);
-            }
+            responseDto.setContent(true);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -75,24 +75,24 @@ public class MessageController {
 
     @RequestMapping("/getOfflineMessageCount")
     @ResponseBody
-    public ResponseDto<List<ContactOffMsgCntPair>> getOfflineMessageCount(int userId, HttpSession session) {
+    public ResponseDto<List<ContactOffMsgCntPair>> getOfflineMessageCount(HttpSession session) {
         ResponseDto<List<ContactOffMsgCntPair>> responseDto = new ResponseDto<List<ContactOffMsgCntPair>>();
         try {
-            if (SessionUtils.isUserLegal(userId, session)) {
-                List<ContactOffMsgCntPair> contactOffMsgCntPairs = CollectionUtils.newArrayList();
+            AccountDto loginAccount = SessionUtils.getLoginAccount(session);
 
-                Set<AccountDto> contacts = contactService.getContacts(userId);
-                for (AccountDto contact : contacts) {
-                    MessageQueryDto queryDto = buildOfflineMessageCountQueryDto(userId, contact.getId());
-                    int count = messageService.getMessagesCountByQueryDto(queryDto);
-                    ContactOffMsgCntPair pair = new ContactOffMsgCntPair();
-                    pair.setContactUserId(contact.getId());
-                    pair.setCount(count);
-                    contactOffMsgCntPairs.add(pair);
-                }
+            List<ContactOffMsgCntPair> contactOffMsgCntPairs = CollectionUtils.newArrayList();
 
-                responseDto.setContent(contactOffMsgCntPairs);
+            Set<AccountDto> contacts = contactService.getContacts(loginAccount.getId());
+            for (AccountDto contact : contacts) {
+                MessageQueryDto queryDto = buildOfflineMessageCountQueryDto(loginAccount.getId(), contact.getId());
+                int count = messageService.getMessagesCountByQueryDto(queryDto);
+                ContactOffMsgCntPair pair = new ContactOffMsgCntPair();
+                pair.setContactUserId(contact.getId());
+                pair.setCount(count);
+                contactOffMsgCntPairs.add(pair);
             }
+
+            responseDto.setContent(contactOffMsgCntPairs);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -103,14 +103,14 @@ public class MessageController {
 
     @RequestMapping("/readOfflineMessages")
     @ResponseBody
-    public ResponseDto<Boolean> readOfflineMessages(int userId, int contactUserId, HttpSession session) {
+    public ResponseDto<Boolean> readOfflineMessages(int contactUserId, HttpSession session) {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
-            if (SessionUtils.isUserLegal(userId, session)) {
-                messageService.readOfflineMessage(userId, contactUserId);
+            AccountDto loginAccount = SessionUtils.getLoginAccount(session);
 
-                responseDto.setContent(true);
-            }
+            messageService.readOfflineMessage(loginAccount.getId(), contactUserId);
+
+            responseDto.setContent(true);
         } catch (Exception e) {
             e.printStackTrace();
 
