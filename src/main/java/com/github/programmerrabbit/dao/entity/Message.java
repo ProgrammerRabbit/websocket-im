@@ -14,6 +14,7 @@ public class Message {
     private int id;
     private Date addTime;
     private int fromId;
+    private String fromUserName;
     private int toId;
     private String content;
     private int status;

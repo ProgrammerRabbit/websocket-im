@@ -8,7 +8,11 @@
 }
 
 #requestBox {
+    overflow: auto;
     display: none;
+    height: 269px;
+    width: 300px;
+    border: 1px solid black;
 }
 
 a {
@@ -23,7 +27,7 @@ a:hover {
 
 .contacts {
     overflow: auto;
-    height: 220px;
+    height: 240px;
     border: 1px solid grey;
     font-size: 16px;
 }
@@ -44,4 +48,8 @@ a:hover {
     border: 1px solid grey;
     color: white;
     background-color: grey;
+}
+
+.messageCount {
+    color: red;
 }

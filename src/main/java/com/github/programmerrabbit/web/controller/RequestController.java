@@ -100,6 +100,8 @@ public class RequestController {
     }
 
     private void sendAcceptMessage(RequestDto requestInfo) throws Exception {
+        String destination = "/topic/message/" + requestInfo.getRequestUserId();
+
         MessageDto messageDto = new MessageDto();
         messageDto.setAddTime(new Date());
         messageDto.setFromId(requestInfo.getAcceptUserId());
@@ -107,8 +109,6 @@ public class RequestController {
         messageDto.setContent("I accept your request, let's chat.");
         messageDto.setStatus(MessageStatusEnum.SENT.getCode());
 
-        messageService.persistMessage(messageDto);
-        String destination = "/topic/message/" + requestInfo.getRequestUserId();
-        messageService.sendWebSocketMessage(destination, messageDto);
+        messageService.persistMessageAndSend(destination, messageDto);
     }
 }

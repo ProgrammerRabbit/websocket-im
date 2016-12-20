@@ -22,14 +22,26 @@ Hi, ${user.username}! |
             CONTACTS:
             <div class="contacts">
                 <#list user.contacts as contact>
-                <div draft="" class="contact" id="${contact.id}" onclick="chooseContact(this.id);">${contact.username}</div>
+                    <div draft="" class="contact" id="${contact.id}" onclick="chooseContact(this.id);">
+                        <span>${contact.username}</span>
+                        <span class="messageCount" id="messageCount${contact.id}"></span>
+                    </div>
                 </#list>
             </div>
         </td>
         <td rowspan="2">
             <textarea id="historyTextarea" rows="15" cols="40" disabled="disabled"></textarea><br>
-            <textarea id="contentTextarea" rows="3" cols="40"></textarea>
-            <button onclick="send();">Send</button>
+            <table width="100%">
+                <tr>
+                    <td>
+                        <strong>Enter</strong> to send, <strong>Shift+Enter</strong> to break line.
+                    </td>
+                    <td align="right">
+                        <button onclick="send();">Send</button>
+                    </td>
+                </tr>
+            </table>
+            <textarea id="contentTextarea" rows="3" cols="40" onkeypress="return enterToSend(event);"></textarea>
         </td>
         <td valign="top" rowspan="2">
             <button onclick="clickRequestBox();">RequestBox</button>

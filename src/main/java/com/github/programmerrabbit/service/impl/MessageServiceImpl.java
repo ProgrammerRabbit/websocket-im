@@ -2,9 +2,11 @@ package com.github.programmerrabbit.service.impl;
 
 import com.github.programmerrabbit.dao.MessageDao;
 import com.github.programmerrabbit.dao.entity.Message;
+import com.github.programmerrabbit.dto.AccountDto;
 import com.github.programmerrabbit.dto.MessageDto;
 import com.github.programmerrabbit.dto.MessageQueryDto;
 import com.github.programmerrabbit.enums.MessageStatusEnum;
+import com.github.programmerrabbit.service.AccountService;
 import com.github.programmerrabbit.service.MessageService;
 import com.github.programmerrabbit.utils.CollectionUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -22,14 +24,10 @@ public class MessageServiceImpl implements MessageService {
     private MessageDao messageDao;
 
     @Resource
+    private AccountService accountService;
+
+    @Resource
     private SimpMessagingTemplate messagingTemplate;
-
-    public void persistMessage(MessageDto messageDto) throws Exception {
-        Message message = messageDto.toEntity();
-        messageDao.insert(message);
-
-        messageDto.setId(message.getId());
-    }
 
     public List<MessageDto> getMessagesByQueryDto(MessageQueryDto queryDto) throws Exception {
         List<Message> messages = messageDao.getMessagesByQueryDto(queryDto);
@@ -50,5 +48,19 @@ public class MessageServiceImpl implements MessageService {
 
     public void sendWebSocketMessage(String destination, Object load) throws Exception {
         messagingTemplate.convertAndSend(destination, load);
+    }
+
+    public void persistMessageAndSend(String destination, MessageDto messageDto) throws Exception {
+        AccountDto fromAccount = accountService.getSimpleAccountById(messageDto.getFromId());
+        messageDto.setFromUserName(fromAccount.getUsername());
+        persistMessage(messageDto);
+        sendWebSocketMessage(destination, messageDto);
+    }
+
+    private void persistMessage(MessageDto messageDto) throws Exception {
+        Message message = messageDto.toEntity();
+        messageDao.insert(message);
+
+        messageDto.setId(message.getId());
     }
 }

@@ -56,12 +56,12 @@ public class MessageController {
         ResponseDto<Boolean> responseDto = new ResponseDto<Boolean>();
         try {
             if (SessionUtils.isUserLegal(message.getFromId(), session)) {
+                String destination = "/topic/message/" + message.getToId();
+
                 message.setAddTime(new Date());
                 message.setStatus(MessageStatusEnum.SENT.getCode());
-                messageService.persistMessage(message);
 
-                String destination = "/topic/message/" + message.getToId();
-                messageService.sendWebSocketMessage(destination, message);
+                messageService.persistMessageAndSend(destination, message);
 
                 responseDto.setContent(true);
             }

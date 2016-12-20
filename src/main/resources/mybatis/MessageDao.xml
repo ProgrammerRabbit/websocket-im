@@ -8,6 +8,7 @@
             id,
             addTime,
             fromId,
+            fromUserName,
             toId,
             content,
             status
@@ -17,6 +18,7 @@
             #{entity.id},
             #{entity.addTime},
             #{entity.fromId},
+            #{entity.fromUserName},
             #{entity.toId},
             #{entity.content},
             #{entity.status}
@@ -29,6 +31,7 @@
             id = #{entity.id},
             addTime = #{entity.addTime},
             fromId = #{entity.fromId},
+            fromUserName = #{entity.fromUserName}
             toId = #{entity.toId},
             content = #{entity.content},
             status = #{entity.status}

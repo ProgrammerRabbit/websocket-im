@@ -1,5 +1,18 @@
 var choseContactId = null;
 
+function enterToSend(event) {
+    if (event.keyCode == 13 && event.shiftKey) {
+        return true;
+    }
+
+    if (event.keyCode == 13) {
+        send();
+        return false;
+    }
+
+    return true;
+}
+
 function send() {
     if (choseContactId != null) {
         var userIdHidden = document.getElementById("userId");
@@ -11,7 +24,7 @@ function send() {
             success: function (data) {
                 if (data.code == 200 && data.content == true) {
                     var head = "[ME] " + new Date().toString().substring(0, 24);
-                    historyTextarea.value = "\n" + historyTextarea.value + head + "\n" + contentTextarea.value + "\n";
+                    historyTextarea.value = historyTextarea.value + head + "\n" + contentTextarea.value + "\n\n";
                     historyTextarea.scrollTop = 99999;
                     contentTextarea.value = "";
                 } else {
@@ -71,9 +84,9 @@ function readOfflineMessages() {
         dataType: "json",
         success: function (data) {
             if (data.code == 200 && data.content == true) {
-                var contact = document.getElementById(choseContactId);
-                if (contact.innerHTML.lastIndexOf(' ') != -1) {
-                    contact.innerHTML = contact.innerHTML.substring(0, contact.innerHTML.lastIndexOf(" "));
+                var messageCount = document.getElementById("messageCount" + choseContactId);
+                if (messageCount.innerHTML != "") {
+                    messageCount.innerHTML = "";
                 }
             }
         }
@@ -200,20 +213,42 @@ function listen() {
     stompClient.connect({}, function (frame) {
         console.log("Connected: " + frame);
 
-        stompClient.subscribe("/topic/request/" + userIdHidden.value, function (request) {
-            var data = JSON.parse(request.body);
+        stompClient.subscribe("/topic/request/" + userIdHidden.value, function (data) {
+            var request = JSON.parse(data.body);
             if (requestBox.innerHTML == "There is no request.") {
-                requestBox.innerHTML = getRequestLine(data);
+                requestBox.innerHTML = getRequestLine(request);
             } else {
-                requestBox.innerHTML += getRequestLine(data);
+                requestBox.innerHTML += getRequestLine(request);
             }
             requestBoxHint.style.color = "red";
             requestBoxHint.innerHTML = "New request";
         });
 
-        stompClient.subscribe("/topic/message/" + userIdHidden.value, function (message) {
-           var data = JSON.parse(message.body);
-           location.reload();
+        stompClient.subscribe("/topic/message/" + userIdHidden.value, function (data) {
+            var message = JSON.parse(data.body);
+            if (message.fromId == choseContactId) {
+                var historyTextarea = document.getElementById("historyTextarea");
+                var time = new Date(message.addTime).toString().substring(0, 24);
+                historyTextarea.value += time + "\n" + message.content + "\n\n";
+                historyTextarea.scrollTop = 9999;
+
+                readOfflineMessages();
+            } else {
+                var messageCount = document.getElementById("messageCount" + message.fromId);
+                if (messageCount != null) {
+                    if (messageCount.innerHTML == "") {
+                        messageCount.innerHTML = " (1)";
+                    } else {
+                        var count = messageCount.innerHTML.substring(2, messageCount.innerHTML.length -1);
+                        messageCount.innerHTML = " (" + (parseInt(count) + 1) + ")";
+                    }
+                } else {
+                    var contacts = document.getElementsByClassName("contacts")[0];
+                    contacts.innerHTML += "<div draft='' class='contact' id='" + message.fromId + "' onclick='chooseContact(this.id);'></div>";
+                    var contact = document.getElementById(message.fromId);
+                    contact.innerHTML = message.fromUserName + "<span class='messageCount' id='messageCount" + message.fromId + "'> (1)</span>"
+                }
+            }
         });
     });
 }
@@ -227,11 +262,11 @@ function getOfflineMessageCount() {
             if (data.code == 200) {
                 var pairList = data.content;
                 for (var i = 0; i < pairList.length; i++) {
-                    var contact = document.getElementById(pairList[i].contactUserId);
-                    if (contact != null) {
+                    var messageCount = document.getElementById("messageCount" + pairList[i].contactUserId);
+                    if (messageCount != null) {
                         var count = pairList[i].count;
                         if (count != 0) {
-                            contact.innerHTML = contact.innerHTML + " (" + count + ")";
+                            messageCount.innerHTML = " (" + count + ")";
                         }
                     }
                 }
