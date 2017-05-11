@@ -199,8 +199,10 @@ function send() {
 
     if (chosenContactId != null && contentTextarea.value != "") {
         $.ajax({
-            url: "/sendMessage?toId=" + chosenContactId + "&content=" + contentTextarea.value,
+            url: "/sendMessage",
+            data: {toId : chosenContactId, content : contentTextarea.value},
             dataType: "json",
+            type: "POST",
             success: function (data) {
                 if (data.code == 200 && data.content == true) {
                     var head = "[ME] " + new Date().toString().substring(0, 24);
@@ -219,7 +221,7 @@ function addContact() {
     var addContactHint = document.getElementById("addContactHint");
     var addContactInput = document.getElementById("addContactInput");
     $.ajax({
-        url: "/addContact?username=" + addContactInput.value,
+        url: "/addContact?username=" + window.encodeURIComponent(addContactInput.value),
         dataType: "json",
         success: function (data) {
             if (data.code == 200 && data.content == true) {
